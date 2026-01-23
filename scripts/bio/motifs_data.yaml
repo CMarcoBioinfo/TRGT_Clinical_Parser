@@ -1,1 +1,28 @@
+patho_motifs:
+    SCA1_ATXN1: ["CAG"]
+    SCA2_ATXN2: ["CAG"]
+    SCA3_ATXN3: ["CAG"]
+    SCA6_CACNA1A: ["CAG"]
+    SCA7_ATXN7: ["CAG"]
+    SCA17_TBP: ["CAG", "CAA"]
+    SCA27B_FGF14: ["GAA"]
+    FRDA_FXN: ["GAA", "GAAA", "GAAGAAA"]
+    CANVAS_RFC1: ["AAAGG", "AAGGG", "ACAGG", "AGGGC"]
+    FTDALS1_C9orf72: ["GGGGCC"]
+    FXS_FMR1: ["CGG"]
+    OPDM1_LRP12: ["CGG"]
 
+uncertain_motifs:
+    CANVAS_RFC1: ["AAGGC", "AGAGG", "AAGAG"]
+
+orientation:
+    SCA1_ATXN1: "RC"
+    SCA2_ATXN2: "RC"
+    SCA3_ATXN3: "RC"
+    SCA6_CACNA1A: "RC"
+    FTDALS1_C9orf72: "RC"
+    OPDM1_LRP12: "RC"
+
+icons:
+    patho: "\U0001F534"
+    uncertain: "?"
