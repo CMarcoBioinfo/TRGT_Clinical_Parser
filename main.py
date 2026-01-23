@@ -188,6 +188,7 @@ def main():
             ]
 
             table_window = sg.Window(f"Résultats pour {sample_display}", table_layout, resizable=True, finalize=True)
+            table_window.maximize()
 
             # -------------------------
             # ÉVÉNEMENTS TABLEAU
