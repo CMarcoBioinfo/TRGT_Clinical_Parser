@@ -101,6 +101,36 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
     icons = motif_data["icons"]
     
     for r in rows:
+        # Profondeur
+        sd1 = r.get("SD1")
+        sd2 = r.get("SD2")
+        if sd1 is not None and sd2 is not None:
+            warning = (int(sd1) < 50) or (int(sd2) < 50)
+            r["Profondeur"] = f"⚠️ {sd1} / {sd2}" if warning else f"{sd1} / {sd2}"
+        
+        # Taille (bp)
+        al1 = r.get("AL1")
+        al2 = r.get("AL2")
+        allr1 = r.get("ALLR1")
+        allr2 = r.get("ALLR2")
+        
+        if al1 is not None and al2 is not None:
+            t1 = f"{al1} ({allr1})" if allr1 else al1
+            t2 = f"{al2} ({allr2})" if allr2 else al2
+            r["Taille (bp)"] = f"{t1} / {t2}"
+        
+        # Pureté
+        ap1 = r.get("AP1")
+        ap2 = r.get("AP2")
+        if ap1 is not None and ap2 is not None:
+            r["Pureté"] = f"{ap1} / {ap2}"
+        
+        # Methylation
+        am1 = r.get("AM1")
+        am2 = r.get("AM2")
+        if am1 is not None and am2 is not None:
+            r["Methylation"] = f"{am1} / {am2}"
+
         r = process_orientation(r, orientation)
         r = process_segmentation(r)
         r = process_repeats(r)
