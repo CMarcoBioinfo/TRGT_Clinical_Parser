@@ -1,0 +1,200 @@
+SCA1_ATXN1:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [6, 38]
+    pathogenic_complete: [45, null]
+
+  structure_rules:
+    - conditions:
+        repeat_range: [39, 44]
+        interruptions: true
+      classification: "normal"
+
+    - conditions:
+        repeat_range: [39, 44]
+        interruptions: false
+      classification: "pathogenic_complete"
+
+
+SCA2_ATXN2:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [14, 31]
+    intermediate: [32, 33]
+    pathogenic_complete: [34, null]
+
+  structure_rules: []
+
+
+SCA3_ATXN3:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [12, 44]
+    intermediate: [45, 59]
+    pathogenic_complete: [60, null]
+
+  structure_rules: []
+
+
+SCA6_CACNA1A:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [0, 18]
+    pathogenic_incomplete: [19, 19]
+    pathogenic_complete: [20, null]
+
+  structure_rules: []
+
+
+SCA7_ATXN7:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [4, 19]
+    intermediate: [28, 33]
+    pathogenic_incomplete: [34, 35]
+    pathogenic_complete: [36, null]
+
+  structure_rules: []
+
+
+SCA17_TBP:
+  motif_properties:
+    pathogenic_motifs: ["CAG", "CAA"]
+    pure_only: false
+    motif_groups:
+      - ["CAG", "CAA"]
+
+  thresholds:
+    normal: [25, 40]
+    pathogenic_incomplete: [41, 48]
+    pathogenic_complete: [49, null]
+
+  structure_rules: []
+
+
+FRDA_FXN:
+  motif_properties:
+    pathogenic_motifs: ["GAA", "GAAA", "GAAGAAA"]
+    protective_motifs: ["GAAGAG"]
+    non_pathogenic_motifs: ["A"]
+    pure_only: false
+    motif_groups:
+      - ["GAA", "GAAA", "GAAGAAA"]
+
+  thresholds:
+    normal: [0, 33]
+    intermediate: [34, 65]
+    pathogenic_complete: [66, null]
+
+  structure_rules: []
+
+
+SCA27B_FGF14:
+  motif_properties:
+    pathogenic_motifs: ["GAA"]
+    pure_only: true
+
+  thresholds:
+    normal: [0, 179]
+    intermediate: [180, 249]
+    pathogenic_incomplete: [250, 300]
+    pathogenic_complete: [301, null]
+
+  structure_rules:
+    - conditions:
+        repeat_range: [250, null]
+        interruptions: true
+      classification: "intermediate"
+
+
+CANVAS_RFC1:
+  motif_properties:
+    pathogenic_motifs: ["AAGGG", "AAAGG"]
+    compatible_motifs: ["ACAGG", "AGGGC", "AGAGG", "AAGGC", "AAAGGG"]
+    non_pathogenic_motifs: ["AAAAG"]
+    pure_only: false
+    motif_groups:
+      - ["AAGGG", "AAAGG"]
+
+  thresholds:
+    AAGGG:
+      normal: [0, 249]
+      intermediate: [250, 399]
+      pathogenic_complete: [400, null]
+
+    AAAGG:
+      normal: [0, 499]
+      pathogenic_complete: [500, null]
+
+  structure_rules:
+    - pattern: "AAAGG(10-25)-AAGGG(n)-AAAGG(4-6)"
+      classification: "pathogenic_complete"
+
+
+FTDALS1_C9orf72:
+  motif_properties:
+    pathogenic_motifs: ["GGGGCC"]
+    pure_only: false
+
+  thresholds:
+    normal: [0, 19]
+    intermediate: [20, 30]
+    pathogenic_complete: [31, null]
+
+  structure_rules: []
+
+
+FXS_FMR1:
+  motif_properties:
+    pathogenic_motifs: ["CGG"]
+    non_pathogenic_motifs: ["AGG"]
+    pure_only: true
+    motif_groups:
+      - ["CGG"]
+      - ["AGG"]
+
+  thresholds:
+    normal: [0, 44]
+    intermediate: [45, 54]
+    premutation: [55, 200]
+    pathogenic_complete: [200, null]
+
+  structure_rules: []
+
+
+OPDM1_LRP12:
+  motif_properties:
+    pathogenic_motifs: ["CGG"]
+    pure_only: true
+
+  thresholds:
+    normal: [0, 40]
+    intermediate: [41, 75]
+    pathogenic_complete: [76, null]
+
+  structure_rules: []
