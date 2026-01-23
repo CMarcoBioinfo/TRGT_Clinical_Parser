@@ -1,9 +1,12 @@
-def mark_motifs(value, trid):
+def mark_motifs(value, trid, patho_motifs, uncertain_motifs, icons):
     if not value:
         return value
 
-    patho = PATHO_MOTIFS.get(trid, set())
-    uncertain = UNCERTAIN_MOTIFS.get(trid, set())
+    patho = patho_motifs.get(trid, set())
+    uncertain = uncertain_motifs.get(trid, set())
+
+    RED = icons.get("patho", "")
+    UNC = icons.get("uncertain", "")
 
     if "_" in value:
         parts = value.split("_")
@@ -29,29 +32,29 @@ def mark_motifs(value, trid):
             normal_list.append(p)
 
     ordered = patho_list + uncertain_list + normal_list
-    
+
     marked = []
     for p in ordered:
         motif = p.split("(")[0]
         if motif in patho:
-            marked.append(f"{RED_DOT_ICON}{p}")
+            marked.append(f"{RED}{p}")
         elif motif in uncertain:
-            marked.append(f"{UNCERTAIN_ICON}{p}")
+            marked.append(f"{UNC}{p}")
         else:
             marked.append(p)
-            
+
     return sep.join(marked)
 
 
-def mark_segmentation(segmentation, trid):
-    """
-    Marquer les motifs de segmentation
-    """
+def mark_segmentation(segmentation, trid, patho_motifs, uncertain_motifs, icons):
     if not segmentation:
         return segmentation
 
-    patho = PATHO_MOTIFS.get(trid, set())
-    uncertain = UNCERTAIN_MOTIFS.get(trid, set())
+    patho = patho_motifs.get(trid, set())
+    uncertain = uncertain_motifs.get(trid, set())
+
+    RED = icons.get("patho", "")
+    UNC = icons.get("uncertain", "")
 
     parts = segmentation.split("_")
     marked = []
@@ -60,9 +63,9 @@ def mark_segmentation(segmentation, trid):
         motif = p.split("(")[0]
 
         if motif in patho:
-            marked.append(f"{RED_DOT_ICON}{p}")
+            marked.append(f"{RED}{p}")
         elif motif in uncertain:
-            marked.append(f"{UNCERTAIN_ICON}{p}")
+            marked.append(f"{UNC}{p}")
         else:
             marked.append(p)
 
