@@ -136,6 +136,8 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
         r = process_repeats(r)
         r = process_interruptions(r)
         r = process_marking(r, patho_motifs, uncertain_motifs, icons)
+        r["Répétition1"] = sort_repeats(r["Répétition1"])
+        r["Répétition2"] = sort_repeats(r["Répétition2"])
         r = process_plots(r, base_dir, prefix, sample_name)
         
     return rows
