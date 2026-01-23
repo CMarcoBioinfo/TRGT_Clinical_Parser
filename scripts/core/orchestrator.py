@@ -142,8 +142,7 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
 
 
 def process_plots(r, base_dir, prefix, sample_name):
-    """Génère la liste des plots disponibles pour ce TRID."""
     trid = r["TRID"]
-    r["Plots_links"] = get_available_plots(trid, base_dir, prefix, sample_name)
-    
+    links = get_available_plots(base_dir, prefix, sample_name, trid)
+    r["Plots_links"] = links if links else {}
     return r
