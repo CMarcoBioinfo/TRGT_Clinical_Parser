@@ -27,19 +27,29 @@ jobs:
 
     - name: Build EXE
       run: |
-          pyinstaller --onefile --windowed main.py --hidden-import yaml --add-data "scripts/bio/motifs_data.yaml;scripts/bio" --add-data "scripts/bio/clinical_thresholds.yaml;scripts/bio"
+        pyinstaller --onefile --windowed main.py --hidden-import yaml --add-data "scripts/bio/motifs_data.yaml;scripts/bio" --add-data "scripts/bio/clinical_thresholds.yaml;scripts/bio"
 
     - name: Show dist folder
       run: |
         echo "Listing dist folder:"
         dir dist
 
-    - name: Encode EXE in hex for retrieval
+    # --------------------------------------------------------------------
+    # MODE SECOURS : extraction de l'exécutable quand le quota artifact
+    # est plein et que GitHub refuse l'upload.
+    #
+    # Cette étape encode l'exe en hex pour pouvoir le récupérer dans les logs.
+    # À utiliser uniquement quand les artifacts sont bloqués.
+    # --------------------------------------------------------------------
+    - name: Encode EXE in hex for retrieval (EMERGENCY ONLY)
       run: |
         certutil -encodehex dist/main.exe main.hex
         type main.hex
 
-
+    # --------------------------------------------------------------------
+    # MODE NORMAL : upload de l'exécutable en artifact.
+    # À réactiver dès que GitHub libère le quota.
+    # --------------------------------------------------------------------
     # - name: Upload EXE artifact
     #   uses: actions/upload-artifact@v4
     #   with:
