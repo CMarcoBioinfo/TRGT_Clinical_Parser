@@ -35,29 +35,13 @@ jobs:
         dir dist
 
     # --------------------------------------------------------------------
-    # MODE SECOURS : extraction de l'exécutable quand le quota artifact
-    # est plein et que GitHub refuse l'upload.
-    #
-    # Cette étape encode l'exe en hex pour pouvoir le récupérer dans les logs.
-    # À utiliser uniquement quand les artifacts sont bloqués.
-    # Génère un ZIP contenant main.hex et l'affiche en base64
-    # pour pouvoir le récupérer facilement sans artifacts.
-    # --------------------------------------------------------------------
-    - name: Encode EXE in hex and package as ZIP (EMERGENCY ONLY)
-      run: |
-        certutil -encodehex dist/main.exe main.hex
-        powershell Compress-Archive -Path main.hex -DestinationPath main_hex.zip
-        certutil -encode main_hex.zip main_hex.b64
-        type main_hex.b64
-
-
-    # --------------------------------------------------------------------
     # MODE NORMAL : upload de l'exécutable en artifact.
     # À réactiver dès que GitHub libère le quota.
     # --------------------------------------------------------------------
-    # - name: Upload EXE artifact
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: trgt-parser-exe
-    #     path: dist/main.exe
-    #     compression-level: 0
+    - name: Upload EXE artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: trgt-parser-exe
+        path: dist/main.exe
+        compression-level: 0
+
