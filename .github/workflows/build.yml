@@ -30,9 +30,9 @@ jobs:
           pyinstaller --onefile --windowed main.py --hidden-import yaml --add-data "scripts/bio/motifs_data.yaml;scripts/bio" --add-data "scripts/bio/clinical_thresholds.yaml;scripts/bio"
 
 
-    - name: Upload EXE artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: trgt-parser-exe
-        path: dist/main.exe
-        compression-level: 0
+    # - name: Upload EXE artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: trgt-parser-exe
+    #     path: dist/main.exe
+    #     compression-level: 0
