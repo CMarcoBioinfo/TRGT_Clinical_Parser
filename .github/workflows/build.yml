@@ -27,7 +27,10 @@ jobs:
 
     - name: Build EXE
       run: |
-        pyinstaller --onefile --windowed main.py --hidden-import yaml --add-data "scripts/bio/motifs_data.yaml;scripts/bio"
+        pyinstaller --onefile --windowed main.py \
+        --hidden-import yaml \
+        --add-data "scripts/bio/motifs_data.yaml:scripts/bio" \
+        --add-data "scripts/bio/clinical_thresholds.yaml:scripts/bio"
 
     - name: Upload EXE artifact
       uses: actions/upload-artifact@v4
