@@ -40,11 +40,16 @@ jobs:
     #
     # Cette étape encode l'exe en hex pour pouvoir le récupérer dans les logs.
     # À utiliser uniquement quand les artifacts sont bloqués.
+    # Génère un ZIP contenant main.hex et l'affiche en base64
+    # pour pouvoir le récupérer facilement sans artifacts.
     # --------------------------------------------------------------------
-    - name: Encode EXE in hex for retrieval (EMERGENCY ONLY)
+    - name: Encode EXE in hex and package as ZIP (EMERGENCY ONLY)
       run: |
         certutil -encodehex dist/main.exe main.hex
-        type main.hex
+        powershell Compress-Archive -Path main.hex -DestinationPath main_hex.zip
+        certutil -encode main_hex.zip main_hex.b64
+        type main_hex.b64
+
 
     # --------------------------------------------------------------------
     # MODE NORMAL : upload de l'exécutable en artifact.
