@@ -84,7 +84,6 @@ def process_repeats(r, thresholds_data):
 
 
 def process_interruptions(r):
-    """Interruptions TRGT (entre segments)."""
     seq1 = r["_seq1"]
     seq2 = r["_seq2"]
     
@@ -94,12 +93,20 @@ def process_interruptions(r):
     seqs1 = extract_interruption_sequences(seq1, inter1)
     seqs2 = extract_interruption_sequences(seq2, inter2)
     
-    r["Interruptions1"] = sort_repeats(number_interruptions(seqs1))
-    r["Interruptions2"] = sort_repeats(number_interruptions(seqs2))
-    
-    r["SegmentationComplete1"] = segmentation_complete(r["Segmentation1"], inter1, seqs1)
-    r["SegmentationComplete2"] = segmentation_complete(r["Segmentation2"], inter2, seqs2)
-    
+    # Allèle 1
+    if inter1:
+        r["Interruptions1"] = sort_repeats(number_interruptions(seqs1))
+        r["SegmentationComplete1"] = segmentation_complete(r["Segmentation1"], inter1, seqs1)
+    else:
+        r["Interruptions1"] = None
+
+    # Allèle 2
+    if inter2:
+        r["Interruptions2"] = sort_repeats(number_interruptions(seqs2))
+        r["SegmentationComplete2"] = segmentation_complete(r["Segmentation2"], inter2, seqs2)
+    else:
+        r["Interruptions2"] = None
+
     return r
 
 
