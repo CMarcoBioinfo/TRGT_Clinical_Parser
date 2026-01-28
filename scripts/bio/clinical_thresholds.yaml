@@ -129,6 +129,8 @@ SCA27B_FGF14:
     motif_properties:
         pathogenic_motifs: ["GAA"]
         pure_only: true
+        motif_groups:
+            - ["GAA"]
 
     thresholds:
         normal: [0, 179]
@@ -223,6 +225,8 @@ FTDALS1_C9orf72:
     motif_properties:
         pathogenic_motifs: ["GGGGCC"]
         pure_only: false
+        motif_groups:
+            - ["GGGGCC"]
 
     thresholds:
         normal: [0, 19]
@@ -241,6 +245,8 @@ FXS_FMR1:
         pathogenic_motifs: ["CGG"]
         non_pathogenic_motifs: ["AGG"]
         pure_only: true
+        motif_groups:
+            - ["CGG"]
 
     thresholds:
         normal: [0, 44]
@@ -264,6 +270,8 @@ OPDM1_LRP12:
     motif_properties:
         pathogenic_motifs: ["CGG"]
         pure_only: true
+        motif_groups:
+            - ["CGG"]
 
     thresholds:
         normal: [0, 40]
