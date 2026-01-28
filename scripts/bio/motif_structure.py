@@ -43,12 +43,12 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
     names = "+".join(m for m, _ in groups)
     counts = "+".join(str(c) for _, c in groups)
     
-    i = compute_interruption_bp(segmentation, motif_groups)
-    m = compute_m(i, motif_len)
+    i_bp, i_count = compute_interruption_bp(segmentation, motif_groups)
+    m = compute_m(i_bp, motif_len)
     if m > 0:
         counts = f"{counts}+{m}m"
-    if i > 0:
-        counts = f"{counts},{i}i"
+    if i_count > 0:
+        counts = f"{counts},{i_count}i"
         
     if others:
         others_str = "_" + "_".join(f"{m}({c})" for m, c in others)
