@@ -1,4 +1,4 @@
-from scripts.core.clinical_thresholds_load import get_motif_properties
+from scripts.core.clinical_thresholds_loader import get_motif_properties
 from scripts.ui.formatters import parse_motif_counts, parse_segmentation
 from scripts.core.motif_utils import extract_group_motifs, compute_interruption_bp, compute_m
 
