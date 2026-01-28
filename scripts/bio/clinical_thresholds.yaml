@@ -17,12 +17,12 @@ SCA1_ATXN1:
         - conditions:
             repeat_range: [39, 44]
             interruptions: true
-        classification: "normal"
+            classification: "normal"
 
         - conditions:
             repeat_range: [39, 44]
             interruptions: false
-        classification: "pathogenic_complete"
+            classification: "pathogenic_complete"
 
 
 SCA2_ATXN2:
@@ -142,12 +142,12 @@ SCA27B_FGF14:
         - conditions:
             repeat_range: [250, 300]
             interruptions: true
-        classification: "intermediate"
+            classification: "intermediate"
 
         - conditions:
             repeat_range: [301, null]
             interruptions: true
-        classification: "intermediate"
+            classification: "intermediate"
 
 
 FRDA_FXN:
@@ -174,22 +174,22 @@ FRDA_FXN:
         - conditions:
               repeat_range: [34, 84]
               interruption_type: "triplet"
-          classification: "normal"
+              classification: "normal"
 
         - conditions:
               repeat_range: [34, 84]
               interruption_type: "nontriplet"
-          classification: "pathogenic_incomplete"
+              classification: "pathogenic_incomplete"
 
         - conditions:
               repeat_range: [85, null]
               interruptions: false
-          classification: "pathogenic_complete"
+              classification: "pathogenic_complete"
 
         - conditions:
               repeat_range: [85, null]
               interruptions: true
-          classification: "intermediate"
+              classification: "intermediate"
 
 
 CANVAS_RFC1:
