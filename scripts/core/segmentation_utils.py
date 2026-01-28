@@ -38,7 +38,7 @@ def total_reps(p):
 
     if "+" in inside:
         pure, inter = inside.split("+")
-        inter = inter.replace("i", "")
+        inter = inter.replace("m", "")
         return int(pure) + int(inter)
     else:
         return int(inside)
