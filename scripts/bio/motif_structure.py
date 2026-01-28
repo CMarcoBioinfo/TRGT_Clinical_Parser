@@ -1,29 +1,59 @@
-def motif_interruptions(motif_str, segmentation):
-    if not motif_str or not segmentation:
+from scripts.core.clinical_thresholds_load import get_motif_properties
+from scripts.ui.formatters import parse_motif_counts, parse_segmentation
+from scripts.core.motif_utils import extract_group_motifs, compute_interruption_bp, compute_m
+
+def build_motif(trid, repetitions, interruptions, segmentation, thresholds_data):
+    """
+    Prépare les données et lance la construction du motif selon le locus.
+    """
+    if not trid or not repetitions or not segmentation:
         return None
 
-    # Vérifier qu'il n'y a qu'un seul motif
-    nb_motifs = motif_str.split("_")
-    if len(nb_motifs) != 1:
-        return motif_str
+    #      Parsing propre
+    list_repetitions = parse_motif_counts(repetitions)
+    list_interruptions = parse_motif_counts(interruptions) if interruptions else []
+    list_segmentation = parse_segmentation(segmentation)
+                             
+    motif_props = get_motif_properties(trid, thresholds_data)
 
-    # Extraire motif et répétitions pures
-    motif = motif_str.split("(")[0]
-    repetitions = int(motif_str.split("(")[1].split(")")[0])
+    if trid == "FRDA_FXN":
+        return repetitions
 
-    # Extraire start et end depuis la segmentation
-    list_seq = segmentation.split("_")
-    start = int(list_seq[0].split("(")[1].split("-")[0])
-    end = int(list_seq[-1].split("-")[1].split(")")[0])
+    if trid == "CANVAS_RFC1":
+        return repetitions
 
-    # Calcul du total
-    L = len(motif)
-    total = (end - start) / L
-    interruptions = int(round(total - repetitions))
+    else:
+        return build_simple_motif(list_repetitions, list_interruptions, list_segmentation, motif_props)
 
-    # Si aucune interruption
-    if interruptions == 0:
-        return f"{motif}({repetitions})"
 
-    # Sinon motif(pures + i i)
-    return f"{motif}({repetitions}+{interruptions}i)"
+def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
+    """ Construit le motif TRGT final pour les loci simples.
+    - repetitions : [('CAG', 27), ('CAA', 3)]
+    - interruptions : [('CAT', 2), ('T', 2)]
+    - segmentation : [('CAG', 2,5), ('T',5,6), ...]
+    - motif_props : dict du locus """
+    
+    motif_groups = motif_props.get("motif_groups", [])
+    if not motif_groups:
+        return None
+    motif_len = len(motif_groups[0])
+
+    groups, others = extract_group_motifs(repetitions, interruptions, motif_groups)
+    # Construction de la partie répétition pure
+    names = "+".join(m for m, _ in groups)
+    counts = "+".join(str(c) for _, c in groups)
+    
+    i = compute_interruption_bp(segmentation, motif_groups)
+    m = compute_m(i, motif_len)
+    if m > 0:
+        counts = f"{counts}+{m}m"
+    if i > 0:
+        counts = f"{counts},{i}"
+        
+    if others:
+        others_str = "_" + "_".join(f"{m}({c})" for m, c in others)
+    else: 
+        others_str = ""
+
+    rep_string = f"{names}({counts}){others_str}"
+    return rep_string
