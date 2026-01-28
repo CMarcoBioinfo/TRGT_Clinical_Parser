@@ -77,8 +77,8 @@ def process_repeats(r, thresholds_data):
     )
 
     # On remplace les anciennes clés par la version clinique
-    #r["Répétition1"] = sort_repeats(rep1_clin)
-    #r["Répétition2"] = sort_repeats(rep2_clin)
+    r["Répétition1"] = sort_repeats(rep1_clin)
+    r["Répétition2"] = sort_repeats(rep2_clin)
 
     return r
 
