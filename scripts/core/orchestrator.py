@@ -4,7 +4,7 @@ from scripts.core.segmentation_utils import remove_zero_repeats, sort_repeats, n
 from scripts.core.segmentation_interruptions import find_interruptions, extract_interruption_sequences, segmentation_complete
 from scripts.bio.motifs_orientation import reverse_complement, rc_motifs, rc_segmentation
 from scripts.core.motif_structure import build_motif
-from scripts.core.clinical_thresholds_load import get_motif_properties
+from scripts.core.clinical_thresholds_load import load_clinical_thresholds, get_motif_properties
 from scripts.bio.motifs_loader import load_motif_data
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
@@ -118,6 +118,7 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
     uncertain_motifs = motif_data["uncertain_motifs"]
     orientation = motif_data["orientation"]
     icons = motif_data["icons"]
+    thresholds_data = load_clinical_thresholds()
     
     for r in rows:
         # Profondeur
@@ -125,7 +126,7 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
         sd2 = r.get("SD2")
         if sd1 is not None and sd2 is not None:
             warning = (int(sd1) < 50) or (int(sd2) < 50)
-            r["Profondeur"] = f"⚠️ {sd1} / {sd2}" if warning else f"{sd1} / {sd2}"
+            r["Profondeur"] = f"\U000026A0 {sd1} / {sd2}" if warning else f"{sd1} / {sd2}"
         
         # Taille (bp)
         al1 = r.get("AL1")
@@ -152,7 +153,7 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
 
         r = process_orientation(r, orientation)
         r = process_segmentation(r)
-        r = process_repeats(r)
+        r = process_repeats(r, thresholds_data)
         r = process_interruptions(r)
         r = process_marking(r, patho_motifs, uncertain_motifs, icons)
         r["Répétition1"] = sort_repeats(r["Répétition1"])
