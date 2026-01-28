@@ -33,7 +33,7 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
     - segmentation : [('CAG', 2,5), ('T',5,6), ...]
     - motif_props : dict du locus """
     
-    motif_groups = motif_props.get("motif_groups", [])
+    motif_groups = motif_props["motif_groups"][0]
     if not motif_groups:
         return None
     motif_len = len(motif_groups[0])
