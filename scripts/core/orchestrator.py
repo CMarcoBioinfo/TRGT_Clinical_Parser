@@ -56,8 +56,8 @@ def process_repeats(r, thresholds_data):
     r["RépétitionBrute2"] = rep2_raw
 
     # --- Choix segmentation selon interruptions ---
-    seg1 = r["SegmentationComplete1"] if r.get("Interruptions1") else r["Segmentation1"]
-    seg2 = r["SegmentationComplete2"] if r.get("Interruptions2") else r["Segmentation2"]
+    seg1 = r["SegmentationComplete1"] if r.get("Interruptions1") not in (None, "", []) else r["Segmentation1"]
+    seg2 = r["SegmentationComplete2"] if r.get("Interruptions2") not in (None, "", []) else r["Segmentation2"]
 
     # --- Version clinique (nouvelle logique TRGT) ---
     rep1_clin = build_motif(
@@ -160,8 +160,8 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
 
         r = process_orientation(r, orientation)
         r = process_segmentation(r)
-        r = process_repeats(r, thresholds_data)
         r = process_interruptions(r)
+        r = process_repeats(r, thresholds_data)
         r = process_marking(r, patho_motifs, uncertain_motifs, icons)
         r["Répétition1"] = sort_repeats(r["Répétition1"])
         r["Répétition2"] = sort_repeats(r["Répétition2"])
