@@ -48,7 +48,7 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
     if m > 0:
         counts = f"{counts}+{m}m"
     if i > 0:
-        counts = f"{counts},{i}"
+        counts = f"{counts},{i}i"
         
     if others:
         others_str = "_" + "_".join(f"{m}({c})" for m, c in others)
