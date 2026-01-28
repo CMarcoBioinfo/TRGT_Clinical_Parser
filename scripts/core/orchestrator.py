@@ -47,31 +47,38 @@ def process_segmentation(r):
 def process_repeats(r, thresholds_data):
     """Nettoyage et construction du motif TRGT final."""
 
-    r["Répétition1"] = remove_zero_repeats(r["Répétition1"])
-    r["Répétition2"] = remove_zero_repeats(r["Répétition2"])
+    # --- Version brute (ancienne) ---
+    rep1_raw = remove_zero_repeats(r["Répétition1"])
+    rep2_raw = remove_zero_repeats(r["Répétition2"])
 
-    # Choix de la segmentation selon présence d'interruptions
+    # On les stocke pour les autres scripts
+    r["RépétitionBrute1"] = rep1_raw
+    r["RépétitionBrute2"] = rep2_raw
+
+    # --- Choix segmentation selon interruptions ---
     seg1 = r["SegmentationComplete1"] if r.get("Interruptions1") else r["Segmentation1"]
     seg2 = r["SegmentationComplete2"] if r.get("Interruptions2") else r["Segmentation2"]
 
-    r["Répétition1"] = build_motif(
+    # --- Version clinique (nouvelle logique TRGT) ---
+    rep1_clin = build_motif(
         r["TRID"],
-        r["Répétition1"],
+        rep1_raw,
         r.get("Interruptions1"),
         seg1,
         thresholds_data
     )
 
-    r["Répétition2"] = build_motif(
+    rep2_clin = build_motif(
         r["TRID"],
-        r["Répétition2"],
+        rep2_raw,
         r.get("Interruptions2"),
         seg2,
         thresholds_data
     )
 
-    r["Répétition1"] = sort_repeats(r["Répétition1"])
-    r["Répétition2"] = sort_repeats(r["Répétition2"])
+    # On remplace les anciennes clés par la version clinique
+    r["Répétition1"] = sort_repeats(rep1_clin)
+    r["Répétition2"] = sort_repeats(rep2_clin)
 
     return r
 
