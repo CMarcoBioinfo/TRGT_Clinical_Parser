@@ -3,7 +3,7 @@ from scripts.core.segmentation_parser import combine_mc, combine_ms
 from scripts.core.segmentation_utils import remove_zero_repeats, sort_repeats, number_interruptions
 from scripts.core.segmentation_interruptions import find_interruptions, extract_interruption_sequences, segmentation_complete
 from scripts.bio.motifs_orientation import reverse_complement, rc_motifs, rc_segmentation
-from scripts.core.motif_structure import build_motif
+from scripts.bio.motif_structure import build_motif
 from scripts.core.clinical_thresholds_load import load_clinical_thresholds, get_motif_properties
 from scripts.bio.motifs_loader import load_motif_data
 from scripts.ui.marking import mark_motifs, mark_segmentation
