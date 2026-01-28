@@ -42,4 +42,4 @@ def compute_m(interruption_bp, motif_len):
     """
     if motif_len <= 0:
         return 0
-    return interruption_bp // motif_len
+    return round(interruption_bp / motif_len)
