@@ -20,15 +20,20 @@ def extract_group_motifs(repetitions, interruptions, motif_group):
 
 def compute_interruption_bp(segmentation, motif_group):
     """
-    Calcule la taille totale des interruptions internes (i) en bp.
+    Calcule :
+      - la taille totale des interruptions internes (i_bp) en bp
+      - le nombre d'interruptions (i_count)
     """
     interruption_bp = 0
+    interruption_count = 0
 
     for motif, start, end in segmentation:
         if motif not in motif_group:
             interruption_bp += (end - start)
+            interruption_count += 1
 
-    return interruption_bp
+    return interruption_bp, interruption_count
+
 
 
 def compute_m(interruption_bp, motif_len):
