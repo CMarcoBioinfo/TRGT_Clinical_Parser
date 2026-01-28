@@ -34,14 +34,33 @@ def remove_zero_repeats(value):
 
 
 def total_reps(p):
+    """
+    Extrait le nombre total de répétitions d'un motif TRGT.
+    Compatible avec :
+        CAG(27)
+        CAG(27+1)
+        CAG(27+1,2)
+        CAG(20+2+1,3)
+    """
     inside = p.split("(")[1].split(")")[0]
 
-    if "+" in inside:
-        pure, inter = inside.split("+")
-        inter = inter.replace("m", "")
-        return int(pure) + int(inter)
-    else:
-        return int(inside)
+    # On enlève la partie ",i" s'il y en a une
+    if "," in inside:
+        inside = inside.split(",")[0]
+
+    # inside est maintenant du type "20+2+1"
+    parts = inside.split("+")
+
+    total = 0
+    for part in parts:
+        # sécurité : ignorer les trucs non numériques
+        try:
+            total += int(part)
+        except ValueError:
+            pass
+
+    return total
+
 
 
 def sort_repeats(value):
