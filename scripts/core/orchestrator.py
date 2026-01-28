@@ -4,7 +4,7 @@ from scripts.core.segmentation_utils import remove_zero_repeats, sort_repeats, n
 from scripts.core.segmentation_interruptions import find_interruptions, extract_interruption_sequences, segmentation_complete
 from scripts.bio.motifs_orientation import reverse_complement, rc_motifs, rc_segmentation
 from scripts.bio.motif_structure import build_motif
-from scripts.core.clinical_thresholds_load import load_clinical_thresholds, get_motif_properties
+from scripts.bio.clinical_thresholds_loader import load_clinical_thresholds, get_motif_properties
 from scripts.bio.motifs_loader import load_motif_data
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
