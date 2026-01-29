@@ -17,7 +17,8 @@ def build_motif(trid, repetitions, interruptions, segmentation, thresholds_data)
     motif_props = get_motif_properties(trid, thresholds_data)
 
     if trid == "FRDA_FXN":
-        return repetitions
+        return build_fxn_motif(list_repetitions, list_interruptions, list_segmentation, motif_props)
+
 
     if trid == "CANVAS_RFC1":
         return repetitions
@@ -56,4 +57,90 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
         others_str = ""
 
     rep_string = f"{names}({counts}){others_str}"
+    return rep_string
+
+
+def build_fxn_motif(repetitions, interruptions, segmentation, motif_props):
+    """
+    Construit la notation FXN enrichie :
+    GAA(total + units_GAAA (GAAA) + units_GAAGAAA (nGAAGAAA GAAGAAA) + m, i)_others
+    """
+
+    # Définition des motifs FXN
+    main = "GAA"
+    long1 = "GAAA"      # 4 bp → 1 unité
+    long2 = "GAAGAAA"   # 7 bp → 2 unités
+
+    motif_groups = motif_props["motif_groups"][0]
+    if not motif_groups:
+        return None
+
+    motif_len = len(main)  # = 3 bp
+
+    # 1) Extraction des motifs du groupe
+    groups, others = extract_group_motifs(repetitions, interruptions, motif_groups)
+
+    # Comptages initiaux
+    n_GAA = 0
+    n_GAAA = 0
+    n_GAAGAAA = 0
+
+    for motif, count in groups:
+        if motif == main:
+            n_GAA = count
+        elif motif == long1:
+            n_GAAA = count
+        elif motif == long2:
+            n_GAAGAAA = count
+
+    # 2) Unités longues
+    units_GAAA = n_GAAA * 1
+    units_GAAGAAA = n_GAAGAAA * 2
+    units_long = units_GAAA + units_GAAGAAA
+
+    # 3) bp des motifs longs
+    bp_GAAA = n_GAAA * len(long1)
+    bp_GAAGAAA = n_GAAGAAA * len(long2)
+
+    # 4) Interruptions réelles
+    i_bp, i_count = compute_interruption_bp(segmentation, motif_groups)
+
+    # 5) Total bp pour m = interruptions + motifs longs
+    total_bp_for_m = i_bp + bp_GAAA + bp_GAAGAAA
+
+    # 6) m total (en unités)
+    m_total = compute_m(total_bp_for_m, motif_len)
+
+    # 7) m résiduel (on retire les unités longues déjà comptées)
+    m = m_total - units_long
+    if m < 0:
+        m = 0
+
+    # 8) Total final en unités
+    total_units = n_GAA + units_long + m
+
+    # 9) Construction de la notation enrichie
+    parts = [str(total_units)]
+
+    if n_GAAA > 0:
+        parts.append(f" + {units_GAAA} ({long1})")
+
+    if n_GAAGAAA > 0:
+        parts.append(f" + {units_GAAGAAA} ({n_GAAGAAA}{long2})")
+
+    if m > 0:
+        parts.append(f" + {m}m")
+
+    counts = "".join(parts)
+
+    if i_count > 0:
+        counts += f", {i_count}i"
+
+    # 10) Ajout des autres motifs
+    if others:
+        others_str = "_" + "_".join(f"{motif}({count})" for motif, count in others)
+    else:
+        others_str = ""
+
+    rep_string = f"{main}({counts}){others_str}"
     return rep_string
