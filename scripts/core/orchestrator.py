@@ -79,9 +79,15 @@ def process_repeats(r, thresholds_data):
     # On remplace les anciennes clés par la version clinique
     r["Répétition1"] = sort_repeats(rep1_clin)
     r["Répétition2"] = sort_repeats(rep2_clin)
+    g1  = build_genotype(r["TRID"], r["Répétition1"], thresholds_data)
+    g2 = build_genotype(r["TRID"], r["Répétition2"], thresholds_data)
 
+    if g1 is not None and g2 is not None:
+        r["Genotype"] = f"{g1} / {g2}"
+    else:
+        r["Genotype"] = None
+    
     return r
-
 
 def process_interruptions(r):
     seq1 = r["_seq1"]
