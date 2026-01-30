@@ -97,7 +97,6 @@ def classify_structural(genotype, interruptions, locus):
 def classify_fxn(genotype, interruptions, locus):
     rules = locus.get("structure_rules", [])
 
-    # interruptions → motifs → triplet / nontriplet
     if interruptions:
         motifs = [m.split("(")[0] for m in interruptions]
         all_triplet = all(len(m) == 3 for m in motifs)
@@ -105,11 +104,9 @@ def classify_fxn(genotype, interruptions, locus):
     else:
         interruption_type = None
 
-    # 1) Règles structurelles
     for rule in rules:
         cond = rule["conditions"]
 
-        # repeat_range
         rr = cond.get("repeat_range")
         if rr:
             low, high = rr
@@ -118,17 +115,15 @@ def classify_fxn(genotype, interruptions, locus):
             if high is not None and genotype > high:
                 continue
 
-        # interruptions true/false
         if "interruptions" in cond:
             if cond["interruptions"] != bool(interruptions):
                 continue
 
-        # interruption_type
         if "interruption_type" in cond:
             if cond["interruption_type"] != interruption_type:
                 continue
 
-        return rule["classification"]
+        # 🔴 ici la correction :
+        return cond["classification"]
 
-    # 2) Sinon seuils
     return classify_simple(genotype, locus["thresholds"])
