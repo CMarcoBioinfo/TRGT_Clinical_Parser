@@ -41,7 +41,7 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
 
     groups, others = extract_group_motifs(repetitions, interruptions, motif_groups)
     # Construction de la partie répétition pure
-    names = " + ".join(m for m, _ in groups)
+    names = "+".join(m for m, _ in groups)
     counts = " + ".join(str(c) for _, c in groups)
     
     i_bp, i_count = compute_interruption_bp(segmentation, motif_groups)
