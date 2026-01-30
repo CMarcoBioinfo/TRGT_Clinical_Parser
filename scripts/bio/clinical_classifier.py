@@ -69,11 +69,9 @@ def classify_structural(genotype, interruptions, locus):
     rules = locus.get("structure_rules", [])
     has_interruptions = bool(interruptions)
 
-    # 1) Appliquer les règles structurelles
     for rule in rules:
         cond = rule["conditions"]
 
-        # repeat_range
         rr = cond.get("repeat_range")
         if rr:
             low, high = rr
@@ -82,14 +80,13 @@ def classify_structural(genotype, interruptions, locus):
             if high is not None and genotype > high:
                 continue
 
-        # interruptions true/false
         if "interruptions" in cond:
             if cond["interruptions"] != has_interruptions:
                 continue
 
-        return rule["classification"]
+        # classification est dans cond, pas dans rule
+        return cond["classification"]
 
-    # 2) Sinon appliquer les seuils
     return classify_simple(genotype, locus["thresholds"])
 
 
