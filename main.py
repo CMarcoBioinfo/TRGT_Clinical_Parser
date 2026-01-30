@@ -157,14 +157,13 @@ def main():
                 "TRID", "Gene", "Profondeur",
                 "Taille (bp)", "Motifs", "Genotype",
                 "Répétition1", "Répétition2",
-                "Segmentation1", "Segmentation2",
-                "Pureté", "Methylation"
+                "Segmentation1", "Segmentation2"
             ]
 
             rows.sort(key=lambda r: TRID_ORDER.get(r["TRID"], 999))
             table_data = [[r.get(h, "") for h in headers] for r in rows]
 
-            col_widths = [14, 8, 10, 20, 12, 8, 20, 20, 30, 30, 15, 10]
+            col_widths = [14, 8, 10, 20, 12, 10, 20, 20, 30, 30]
 
             table_layout = [
                 [sg.Table(
@@ -207,10 +206,12 @@ def main():
                     row = rows[idx]
 
                     details = [f"{h} : {row.get(h, '')}" for h in headers]
+                    details.append(f"Pureté : {row.get('Pureté', '')}")
+                    details.append(f"Methylation : {row.get('Methylation', '')}")
 
                     # Interruptions
                     if row.get("Interruptions1") or row.get("Interruptions2"):
-                        details.append("")
+                        details.("")
                         if row.get("Interruptions1"):
                             details.append(f"Interruptions1 : {row['Interruptions1']}")
                         if row.get("Interruptions2"):
