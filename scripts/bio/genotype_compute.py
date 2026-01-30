@@ -17,48 +17,47 @@ def build_genotype(trid, repetitions, thresholds_data):
 
 
 def compute_genotype(repetitions, motif_props):
-    """
-    Retourne le nombre de répétitions
-    """
     motif_groups = motif_props["motif_groups"][0]
     if not motif_groups:
         return None
 
-    # motif principal patho
     block = extract_main_block(repetitions, motif_groups)
     if block == -1:
         return None
 
-    # Contenu du motif avant la virgule
     inside = block.split(",", 1)[0].split("(", 1)[1]
 
-    # enlever les ')' pour gérer les cas simples "8)"
+    # enlever les ")" pour éviter de perdre "2m)"
     inside = inside.replace(")", "")
 
     number = inside.replace("+", " ").split()
 
     total = 0
     for n in number:
-        # ignorer motifs longs "(GAAA" "(49GAAGAAA"
+
+        # motifs longs "(GAAA" "(49GAAGAAA"
         if "(" in n:
             continue
 
-        # ignorer "49GAAGAAA"
-        if any(c.isalpha() for c in n):
+        # interruptions "2i"
+        if n.endswith("i") and n[:-1].isdigit():
             continue
 
-        # cas "642"
-        if n.isdigit():
-            total += int(n)
-            continue
-
-        # cas "65m"
+        # résidus "2m"
         if n.endswith("m") and n[:-1].isdigit():
             total += int(n[:-1])
             continue
 
-    return total
+        # nombres simples
+        if n.isdigit():
+            total += int(n)
+            continue
 
+        # ignorer tout le reste
+        if any(c.isalpha() for c in n):
+            continue
+
+    return total
 
 
 def extract_main_block(repetitions, motif_groups):
