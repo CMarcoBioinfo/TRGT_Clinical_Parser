@@ -1,6 +1,3 @@
-import re
-
-
 def build_genotype(trid, repetitions, thresolds_data):
     """
     Prépare les doénnes et lance le calcul de genotype
