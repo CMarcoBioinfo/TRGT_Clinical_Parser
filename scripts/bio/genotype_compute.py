@@ -59,10 +59,10 @@ def extract_main_block(repetitions, motif_groups):
 
     for block in blocks:
         motif = block.split("(", 1)[0]
-        submotif = motif.split.("+")
+        submotifs = motif.split("+")
 
-    for m in submotifs:
-        if m in motif_groups:
-            return block
+        for m in submotifs:
+            if m in motif_groups:
+                return block
 
     return -1
