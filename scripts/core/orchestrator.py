@@ -6,6 +6,7 @@ from scripts.bio.motifs_orientation import reverse_complement, rc_motifs, rc_seg
 from scripts.bio.motif_structure import build_motif
 from scripts.bio.clinical_thresholds_loader import load_clinical_thresholds, get_motif_properties
 from scripts.bio.motifs_loader import load_motif_data
+from scripts.bio.genotype_compute import build_genotype
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
 
