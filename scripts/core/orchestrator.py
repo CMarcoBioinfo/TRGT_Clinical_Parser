@@ -7,6 +7,7 @@ from scripts.bio.motif_structure import build_motif
 from scripts.bio.clinical_thresholds_loader import load_clinical_thresholds, get_motif_properties
 from scripts.bio.motifs_loader import load_motif_data
 from scripts.bio.genotype_compute import build_genotype
+from scripts.bio.clinical_classifier import classify_allele
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
 
@@ -87,8 +88,17 @@ def process_repeats(r, thresholds_data):
         r["Genotype"] = f"{g1} / {g2}"
     else:
         r["Genotype"] = None
+
+    # Classification clinique
+    c1 = classify_allele(r["TRID"], g1, r.get("Interruptions1"), thresholds_data)
+    c2 = classify_allele(r["TRID"], g2, r.get("Interruptions2"), thresholds_data)
     
+    r["Classification1"] = c1
+    r["Classification2"] = c2
+    r["Classification"] = f"{c1} / {c2}"
+
     return r
+
 
 def process_interruptions(r):
     seq1 = r["_seq1"]
