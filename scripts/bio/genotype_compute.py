@@ -10,7 +10,7 @@ def build_genotype(trid, repetitions, thresholds_data):
 
     motif_props = get_motif_properties(trid, thresholds_data)
 
-    if trid == "CANVAS_RFC":
+    if trid == "CANVAS_RFC1":
         return "complexe"
 
     return compute_genotype(repetitions, motif_props)
@@ -18,7 +18,7 @@ def build_genotype(trid, repetitions, thresholds_data):
 
 def compute_genotype(repetitions, motif_props):
     """
-    Retourne les nombre de répétition
+    Retourne le nombre de répétitions
     """
     motif_groups = motif_props["motif_groups"][0]
     if not motif_groups:
@@ -26,15 +26,21 @@ def compute_genotype(repetitions, motif_props):
 
     # motif principal patho
     block = extract_main_block(repetitions, motif_groups)
+    if block == -1:
+        return None
 
     # Contenu du motif avant la virgule
     inside = block.split(",", 1)[0].split("(", 1)[1]
+
+    # enlever les ')' pour gérer les cas simples "8)"
+    inside = inside.replace(")", "")
+
     number = inside.replace("+", " ").split()
 
     total = 0
     for n in number:
-        # ignorer motifs longs "(GAAA)" "(49GAAGAAA)"
-        if "(" in n or ")" in n:
+        # ignorer motifs longs "(GAAA" "(49GAAGAAA"
+        if "(" in n:
             continue
 
         # ignorer "49GAAGAAA"
@@ -54,6 +60,7 @@ def compute_genotype(repetitions, motif_props):
     return total
 
 
+
 def extract_main_block(repetitions, motif_groups):
     """
     Retourne le bloc contenant un des motifs principaux
@@ -61,7 +68,11 @@ def extract_main_block(repetitions, motif_groups):
     blocks = repetitions.split("_")
 
     for block in blocks:
-        motif = block.split("(", 1)[0]
+        raw_motif = block.split("(", 1)[0]
+
+        # on garde uniquement lettres et '+', on vire les icônes type "🔴"
+        motif = "".join(c for c in raw_motif if c.isalpha() or c == "+")
+
         submotifs = motif.split("+")
 
         for m in submotifs:
