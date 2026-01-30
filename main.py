@@ -155,15 +155,16 @@ def main():
 
             headers = [
                 "TRID", "Gene", "Profondeur",
-                "Taille (bp)", "Motifs", "Genotype",
+                "Taille (bp)", "Motifs", "Genotype", "Classification",
                 "Répétition1", "Répétition2",
                 "Segmentation1", "Segmentation2"
             ]
 
+
             rows.sort(key=lambda r: TRID_ORDER.get(r["TRID"], 999))
             table_data = [[r.get(h, "") for h in headers] for r in rows]
 
-            col_widths = [14, 8, 10, 20, 12, 10, 20, 20, 30, 30]
+            col_widths = [14, 8, 10, 20, 12, 10, 14, 20, 20, 30, 30]
 
             table_layout = [
                 [sg.Table(
