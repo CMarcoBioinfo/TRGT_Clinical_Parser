@@ -68,4 +68,4 @@ def extract_main_block(repetitions, motif_groups):
             if m in motif_groups:
                 return block
 
-    return -1
+    return 0
