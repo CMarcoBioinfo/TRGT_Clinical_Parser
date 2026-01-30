@@ -211,7 +211,7 @@ def main():
 
                     # Interruptions
                     if row.get("Interruptions1") or row.get("Interruptions2"):
-                        details.("")
+                        details.append("")
                         if row.get("Interruptions1"):
                             details.append(f"Interruptions1 : {row['Interruptions1']}")
                         if row.get("Interruptions2"):
