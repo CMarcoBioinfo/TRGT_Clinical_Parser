@@ -1,8 +1,11 @@
-def build_genotype(trid, repetitions, thresolds_data):
+from scripts.bio.clinical_thresholds_loader import get_motif_properties
+
+
+def build_genotype(trid, repetitions, thresholds_data):
     """
     Prépare les doénnes et lance le calcul de genotype
     """
-    if not trid or not repetitions or not segmentation:
+    if not trid or not repetitions:
         return None
 
     motif_props = get_motif_properties(trid, thresholds_data)
