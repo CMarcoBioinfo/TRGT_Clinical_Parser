@@ -8,23 +8,22 @@ SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
 def find_spanning_bam(zip_path, sample_name):
-    """
-    Reconstruit le nom EXACT du BAM TRGT à partir du sample_name.
-    Exemple : sample_name = 2407190712.trgt
-              BAM = 2407190712.trgt.sorted.spanning.bam
-    """
     if not os.path.exists(zip_path):
         return None
 
-    bam = f"{sample_name}.sorted.spanning.bam"
-    bai = f"{bam}.bai"
-
     with zipfile.ZipFile(zip_path, "r") as z:
         names = z.namelist()
-        if bam in names and bai in names:
-            return zip_path, bam, bai
+
+    # On cherche un fichier qui commence par sample_name et finit par .bam
+    for n in names:
+        if n.startswith(sample_name) and n.endswith(".bam"):
+            bam = n
+            bai = bam + ".bai"
+            if bai in names:
+                return zip_path, bam, bai
 
     return None
+
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample_name):
