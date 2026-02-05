@@ -5,7 +5,6 @@ import subprocess
 import shutil
 import PySimpleGUI as sg
 
-# Suffixe standard des archives TRGT contenant les spanning BAM
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
@@ -16,18 +15,23 @@ def igv_available():
 
 def find_spanning_bam(zip_path, sample):
     """
-    Vérifie si {sample}.sorted.spanning.bam et .bai existent dans le ZIP.
-    Exemple : patient1.trgt.sorted.spanning.bam
+    Trouve automatiquement le BAM TRGT correspondant au sample,
+    en appliquant la même logique que plots.py :
+    - on ne devine rien
+    - on parcourt le ZIP
+    - on cherche un fichier qui commence par {sample}
+      et finit par .sorted.spanning.bam
     """
     if not os.path.exists(zip_path):
         return None
 
-    bam = f"{sample}.sorted.spanning.bam"
-    bai = f"{sample}.sorted.spanning.bam.bai"
-
     with zipfile.ZipFile(zip_path, "r") as z:
-        if bam in z.namelist() and bai in z.namelist():
-            return bam, bai
+        for name in z.namelist():
+            if name.startswith(sample) and name.endswith(".sorted.spanning.bam"):
+                bam = name
+                bai = name + ".bai"
+                if bai in z.namelist():
+                    return bam, bai
 
     return None
 
