@@ -113,18 +113,24 @@ def main():
                 window["-SAMPLE-"].update(values=display)
 
         if event == "-SAMPLE-":
-            typed = values["-SAMPLE-"].lower()
-            all_samples = window.metadata.get("all_samples", [])
+            typed = values["-SAMPLE-"]
         
-            # Filtrage dynamique
-            filtered = [s for s in all_samples if typed in s.lower()]
+            # Si l'utilisateur n'a rien tapé → afficher tout
+            if not typed:
+                window["-SAMPLE-"].update(values=window.metadata["all_samples"])
+                return
+        
+            typed_lower = typed.lower()
+            all_samples = window.metadata["all_samples"]
+        
+            # Filtrage
+            filtered = [s for s in all_samples if typed_lower in s.lower()]
         
             # Mise à jour de la liste
             window["-SAMPLE-"].update(values=filtered)
         
-            # On garde ce que l'utilisateur a tapé
+            # Garder ce que l'utilisateur a tapé
             window["-SAMPLE-"].update(value=typed)
-
 
         # Lancer l'analyse
         if event == "Lancer l'analyse":
