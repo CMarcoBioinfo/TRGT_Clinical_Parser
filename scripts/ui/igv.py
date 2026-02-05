@@ -8,22 +8,11 @@ SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
 def find_spanning_bam(zip_path, sample):
-    """
-    Trouve automatiquement le BAM TRGT correspondant au sample,
-    en appliquant la même logique que plots.py :
-    - on parcourt le ZIP
-    - on cherche un fichier contenant le sample
-      et finissant par .sorted.spanning.bam
-    """
     if not os.path.exists(zip_path):
         return None
 
     with zipfile.ZipFile(zip_path, "r") as z:
         names = z.namelist()
-
-        # DEBUG
-        print("DEBUG — sample recherché :", sample)
-        print("DEBUG — contenu du ZIP :", names)
 
         for name in names:
             if sample in name and name.endswith(".sorted.spanning.bam"):
@@ -32,7 +21,14 @@ def find_spanning_bam(zip_path, sample):
                 if bai in names:
                     return bam, bai
 
+        # DEBUG visible dans un EXE
+        sg.popup(
+            "DEBUG — sample recherché :", sample,
+            "\n\nDEBUG — contenu du ZIP :", "\n".join(names)
+        )
+
     return None
+
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample):
