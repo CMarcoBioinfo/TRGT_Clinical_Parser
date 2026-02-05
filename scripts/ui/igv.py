@@ -2,14 +2,9 @@ import os
 import zipfile
 import tempfile
 import subprocess
-import shutil
 import PySimpleGUI as sg
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
-
-
-def igv_available():
-    return shutil.which("igv.sh") or shutil.which("igv.bat")
 
 
 def find_spanning_bam(zip_path, sample):
@@ -36,6 +31,9 @@ def find_spanning_bam(zip_path, sample):
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample):
+    """
+    Retourne (zip_path, bam_file, bai_file) si le spanning BAM existe.
+    """
     zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
     result = find_spanning_bam(zip_path, sample)
 
@@ -47,7 +45,12 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample):
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
+    """
+    Extrait le spanning BAM dans un dossier temporaire et tente de lancer IGV.
+    Si IGV n'est pas trouvé → message propre.
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
+        # Extraction des fichiers
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extract(bam_file, tmpdir)
             z.extract(bai_file, tmpdir)
@@ -55,10 +58,29 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
         bam_path = os.path.join(tmpdir, bam_file)
         region = f"{chrom}:{start}-{end}"
 
-        igv_cmd = shutil.which("igv.sh") or shutil.which("igv.bat")
-        if not igv_cmd:
-            sg.popup("IGV n'est pas installé sur ce poste.")
-            return
+        # Commandes possibles selon OS
+        possible_cmds = [
+            "igv.bat",   # Windows
+            "igv.exe",   # Windows
+            "igv.sh",    # Linux/Mac
+            "igv"        # fallback
+        ]
 
-        subprocess.Popen([igv_cmd, bam_path, region])
-        sg.popup("IGV a été lancé.")
+        # Essayer chaque commande
+        for cmd in possible_cmds:
+            try:
+                subprocess.Popen([cmd, bam_path, region])
+                sg.popup("IGV a été lancé.")
+                return
+            except FileNotFoundError:
+                continue
+            except Exception as e:
+                sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
+                return
+
+        # Si aucune commande n'a fonctionné
+        sg.popup(
+            "Impossible de lancer IGV.\n\n"
+            "IGV n'est pas installé ou n'est pas dans le PATH.\n"
+            "Essayez d'ajouter IGV au PATH ou lancez-le manuellement."
+        )
