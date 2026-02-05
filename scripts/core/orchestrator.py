@@ -190,6 +190,8 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
         r["Répétition1"] = sort_repeats(r["Répétition1"])
         r["Répétition2"] = sort_repeats(r["Répétition2"])
         r = process_plots(r, base_dir, prefix, sample_name)
+        r = process_igv(r, base_dir, prefix, sample_name)
+
         
     return rows
 
@@ -198,4 +200,10 @@ def process_plots(r, base_dir, prefix, sample_name):
     trid = r["TRID"]
     links = get_available_plots(base_dir, prefix, sample_name, trid)
     r["Plots_links"] = links if links else {}
+    return r
+
+def process_igv(r, base_dir, prefix, sample_name):
+    zip_path = os.path.join(base_dir, f"{prefix}spanning_BAM.zip")
+    spanning = find_spanning_bam(zip_path, sample_internal)
+    r["IGV_links"] = spanning if spanning else None
     return r
