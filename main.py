@@ -225,14 +225,9 @@ def main():
                 if ev == "-TABLE-":
                     idx = vals["-TABLE-"][0]
                     row = rows[idx]
-                                        # Vérifier si un spanning BAM existe pour ce sample
-                    spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_name)
-                    
-                    if spanning:
-                        table_window["-IGV-"].update(disabled=False)
-                    else:
-                        table_window["-IGV-"].update(disabled=True)
 
+                    table_window["-IGV-"].update(disabled=False)
+                    
                     details = [f"{h} : {row.get(h, '')}" for h in headers]
                     details.append(f"Pureté : {row.get('Pureté', '')}")
                     details.append(f"Methylation : {row.get('Methylation', '')}")
