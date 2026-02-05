@@ -26,7 +26,7 @@ def find_igv_launcher():
             for entry in os.listdir(base):
                 if entry.lower().startswith("igv"):
                     igv_dir = os.path.join(base, entry)
-                    launcher = os.path.join(igv_dir, "igv-launcher.bat")
+                    launcher = os.path.join(igv_dir, "igv.bat")
 
                     print("Test :", launcher)
 
