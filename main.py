@@ -7,7 +7,7 @@ import os
 from scripts.core.orchestrator import process_sample
 from scripts.ui.plots import get_analysis_prefix, open_svg
 from scripts.ui.html_export import generate_html_table, save_and_open_html
-from scripts.ui.igv import get_available_spanning_bam, open_igv, igv_available
+from scripts.ui.igv import get_available_spanning_bam, open_igv
 
 
 # -------------------------
@@ -265,12 +265,6 @@ def main():
                     save_and_open_html(html)
 
                 if ev == "-IGV-":
-                
-                    # Vérifier si IGV est installé AVANT de faire quoi que ce soit
-                    if not igv_available():
-                        sg.popup("IGV n'est pas installé sur ce poste.\n\n"
-                                 "Veuillez installer IGV pour utiliser cette fonctionnalité.")
-                        continue
                 
                     spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_name)
                 
