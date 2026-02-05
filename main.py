@@ -265,26 +265,15 @@ def main():
                     save_and_open_html(html)
 
                 if ev == "-IGV-":
+                    links = row.get("IGV_links")
                 
-                    spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_internal)
-                
-                    if not spanning:
+                    if not links:
                         sg.popup("Aucun spanning BAM disponible pour cet échantillon.")
                         continue
                 
-                    zip_path, bam_file, bai_file = spanning
+                    zip_path, bam_file, bai_file = links
                 
-                    # Extraction dans un dossier temporaire auto-supprimé
-                    with tempfile.TemporaryDirectory() as tmpdir:
-                        with zipfile.ZipFile(zip_path, "r") as z:
-                            z.extract(bam_file, tmpdir)
-                            z.extract(bai_file, tmpdir)
-                
-                        bam_path = os.path.join(tmpdir, bam_file)
-                
-                        # Ouvrir IGV
-                        open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
-
+                    open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
 
     window.close()
 
