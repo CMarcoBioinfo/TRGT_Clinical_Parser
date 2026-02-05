@@ -6,7 +6,7 @@ import shutil
 import PySimpleGUI as sg
 
 # Suffixe standard des archives TRGT contenant les spanning BAM
-SPANNING_ARCHIVE_SUFFIX = "_spanning_BAM.zip"
+SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
 def igv_available():
@@ -16,16 +16,16 @@ def igv_available():
 
 def find_spanning_bam(zip_path, sample):
     """
-    Vérifie si {sample}.trgt.sorted.spanning.bam et .bai existent dans le ZIP.
-    Retourne (bam, bai) si trouvés, sinon None.
+    Vérifie si {sample}.sorted.spanning.bam et .bai existent dans le ZIP.
+    Exemple : patient1.trgt.sorted.spanning.bam
     """
     if not os.path.exists(zip_path):
         return None
 
-    with zipfile.ZipFile(zip_path, "r") as z:
-        bam = f"{sample}.trgt.sorted.spanning.bam"
-        bai = f"{sample}.trgt.sorted.spanning.bam.bai"
+    bam = f"{sample}.sorted.spanning.bam"
+    bai = f"{sample}.sorted.spanning.bam.bai"
 
+    with zipfile.ZipFile(zip_path, "r") as z:
         if bam in z.namelist() and bai in z.namelist():
             return bam, bai
 
@@ -34,8 +34,7 @@ def find_spanning_bam(zip_path, sample):
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample):
     """
-    Retourne (zip_path, bam_file, bai_file) si le spanning BAM existe pour ce sample.
-    Sinon retourne None.
+    Retourne (zip_path, bam_file, bai_file) si le spanning BAM existe.
     """
     zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
     result = find_spanning_bam(zip_path, sample)
