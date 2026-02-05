@@ -1,10 +1,12 @@
 import PySimpleGUI as sg
 import zipfile
+import tempfile
 import os
 
 from scripts.core.orchestrator import process_sample
 from scripts.ui.plots import get_analysis_prefix, open_svg
 from scripts.ui.html_export import generate_html_table, save_and_open_html
+from scripts.ui.igv import get_available_spanning_bam, open_igv, locus_in_bam
 
 
 # -------------------------
@@ -198,7 +200,8 @@ def main():
                 [sg.Frame("Détails", [
                     [sg.Multiline("", key="-DETAILS-", size=(300, 40), disabled=True, expand_x=True, expand_y=True)],
                     [sg.Text("Plots disponibles :"), sg.Combo([], key="-PLOTCHOICE-", size=(40,1))],
-                    [sg.Button("Ouvrir plot"), sg.Button("Copier")]
+                    [sg.Button("Ouvrir plot"), sg.Button("Copier")],
+                    [sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
                 ])],
                 [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
             ]
@@ -221,6 +224,13 @@ def main():
                 if ev == "-TABLE-":
                     idx = vals["-TABLE-"][0]
                     row = rows[idx]
+                                        # Vérifier si un spanning BAM existe pour ce sample
+                    spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_name)
+                    
+                    if spanning:
+                        table_window["-IGV-"].update(disabled=False)
+                    else:
+                        table_window["-IGV-"].update(disabled=True)
 
                     details = [f"{h} : {row.get(h, '')}" for h in headers]
                     details.append(f"Pureté : {row.get('Pureté', '')}")
@@ -258,8 +268,33 @@ def main():
                     html = generate_html_table(headers, rows, sample_name)
                     save_and_open_html(html)
 
-    window.close()
+                if ev == "-IGV-":
+                    spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_name)
+                
+                    if not spanning:
+                        sg.popup("Aucun spanning BAM disponible pour cet échantillon.")
+                        continue
+                
+                    zip_path, bam_file, bai_file = spanning
+                
+                    # Extraction dans un dossier temporaire auto-supprimé
+                    with tempfile.TemporaryDirectory() as tmpdir:
+                        with zipfile.ZipFile(zip_path, "r") as z:
+                            z.extract(bam_file, tmpdir)
+                            z.extract(bai_file, tmpdir)
+                
+                        bam_path = os.path.join(tmpdir, bam_file)
+                
+                        # Vérifier que le locus TRGT existe dans le BAM
+                        trid = row["TRID"]
+                        if not locus_in_bam(bam_path, trid):
+                            sg.popup(f"Aucun read TRGT pour {trid} dans le spanning BAM.")
+                            continue
+                
+                        # Ouvrir IGV
+                        open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
 
+    window.close()
 
 if __name__ == "__main__":
     main()
