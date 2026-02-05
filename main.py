@@ -10,6 +10,19 @@ from scripts.ui.html_export import generate_html_table, save_and_open_html
 from scripts.ui.igv import get_available_spanning_bam, open_igv
 
 
+import ctypes
+import sys
+
+def open_console():
+    # Ouvre une console Windows
+    ctypes.windll.kernel32.AllocConsole()
+    # Redirige stdout et stderr vers la console
+    sys.stdout = open("CONOUT$", "w")
+    sys.stderr = open("CONOUT$", "w")
+
+open_console()
+
+
 # -------------------------
 # CONFIGURATION UI
 # -------------------------
