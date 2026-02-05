@@ -81,14 +81,18 @@ def parse_vcf_from_zip(zip_path, vcf_filename, selected_trids):
 
                 cols = line.split("\t")
                 chrom, pos, vid, ref, alt, qual, flt, info_str, fmt, sample_data = cols
-
+                
                 info = parse_info(info_str)
                 trid = info.get("TRID")
 
                 # Filtrer sur les maladies sélectionnées
                 if trid not in selected_trids:
                     continue
-
+                    
+                # Coordonnées du locus TRGT
+                start = int(pos)
+                end = int(info.get("END", start))
+                
                 # FORMAT fields
                 fmt_fields = fmt.split(":")
                 sample_fields = sample_data.split(":")
@@ -111,6 +115,10 @@ def parse_vcf_from_zip(zip_path, vcf_filename, selected_trids):
                     "Gene": TRID_TO_GENE.get(trid),
                     "Motifs": info.get("MOTIFS"),
                     "GT": gt,
+                    
+                    "CHROM": chrom,
+                    "START": start,
+                    "END": end,
 
                     # Champs séparés A1 / A2
                     "AL1": al1,
