@@ -6,17 +6,20 @@ import PySimpleGUI as sg
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
-
-def find_spanning_bam(zip_path, sample_name):
+def find_spanning_bam(zip_path):
+    """
+    Trouve automatiquement le BAM TRGT dans le ZIP,
+    sans dépendre du sample_name.
+    """
     if not os.path.exists(zip_path):
         return None
 
     with zipfile.ZipFile(zip_path, "r") as z:
         names = z.namelist()
 
-    # On cherche un fichier qui commence par sample_name et finit par .bam
+    # On cherche n'importe quel fichier TRGT spanning
     for n in names:
-        if n.startswith(sample_name) and n.endswith(".bam"):
+        if n.endswith(".sorted.spanning.bam"):
             bam = n
             bai = bam + ".bai"
             if bai in names:
@@ -25,14 +28,13 @@ def find_spanning_bam(zip_path, sample_name):
     return None
 
 
+def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
+    """
+    sample_name n'est plus utilisé.
+    """
+    zip_path = os.path.join(base_dir, f"{analyse_prefix}spanning_BAM.zip")
+    return find_spanning_bam(zip_path)
 
-def get_available_spanning_bam(base_dir, analyse_prefix, sample_name):
-    """
-    Wrapper simple : construit le chemin du ZIP et appelle find_spanning_bam().
-    Permet de garder orchestrator et main propres.
-    """
-    zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
-    return find_spanning_bam(zip_path, sample_name)
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
