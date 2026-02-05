@@ -9,7 +9,6 @@ SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
 def igv_available():
-    """Vérifie si IGV est installé sur le système."""
     return shutil.which("igv.sh") or shutil.which("igv.bat")
 
 
@@ -37,9 +36,6 @@ def find_spanning_bam(zip_path, sample):
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample):
-    """
-    Retourne (zip_path, bam_file, bai_file) si le spanning BAM existe.
-    """
     zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
     result = find_spanning_bam(zip_path, sample)
 
@@ -51,9 +47,6 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample):
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
-    """
-    Extrait le spanning BAM dans un dossier temporaire et ouvre IGV au locus donné.
-    """
     with tempfile.TemporaryDirectory() as tmpdir:
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extract(bam_file, tmpdir)
