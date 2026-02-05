@@ -14,17 +14,27 @@ SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 def find_igv_launcher():
     print("\n=== DEBUG find_igv_launcher ===")
 
-    # Chercher dans Program Files
-    candidates = glob.glob(r"C:\Program Files\IGV*\igv_launcher.bat")
-    if candidates:
-        print("IGV trouvé dans Program Files :", candidates[0])
-        return candidates[0]
+    base_dirs = [
+        r"C:\Program Files",
+        r"C:\Program Files (x86)",
+    ]
 
-    # Chercher dans Program Files (x86)
-    candidates = glob.glob(r"C:\Program Files (x86)\IGV*\igv_launcher.bat")
-    if candidates:
-        print("IGV trouvé dans Program Files (x86) :", candidates[0])
-        return candidates[0]
+    for base in base_dirs:
+        print("Recherche dans :", base)
+
+        try:
+            for entry in os.listdir(base):
+                if entry.lower().startswith("igv"):
+                    igv_dir = os.path.join(base, entry)
+                    launcher = os.path.join(igv_dir, "igv_launcher.bat")
+
+                    print("Test :", launcher)
+
+                    if os.path.exists(launcher):
+                        print("IGV trouvé :", launcher)
+                        return launcher
+        except PermissionError:
+            continue
 
     print("AUCUN igv_launcher.bat trouvé automatiquement.")
     return None
