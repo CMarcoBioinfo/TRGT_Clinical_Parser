@@ -7,7 +7,7 @@ import os
 from scripts.core.orchestrator import process_sample
 from scripts.ui.plots import get_analysis_prefix, open_svg
 from scripts.ui.html_export import generate_html_table, save_and_open_html
-from scripts.ui.igv import get_available_spanning_bam, open_igv, locus_in_bam
+from scripts.ui.igv import get_available_spanning_bam, open_igv, igv_available
 
 
 # -------------------------
@@ -272,7 +272,7 @@ def main():
                 if ev == "-IGV-":
                 
                     # Vérifier si IGV est installé AVANT de faire quoi que ce soit
-                    if not (shutil.which("igv.sh") or shutil.which("igv.bat")):
+                    if not igv_available():
                         sg.popup("IGV n'est pas installé sur ce poste.\n\n"
                                  "Veuillez installer IGV pour utiliser cette fonctionnalité.")
                         continue
@@ -292,12 +292,6 @@ def main():
                             z.extract(bai_file, tmpdir)
                 
                         bam_path = os.path.join(tmpdir, bam_file)
-                
-                        # Vérifier que le locus TRGT existe dans le BAM
-                        trid = row["TRID"]
-                        if not locus_in_bam(bam_path, trid):
-                            sg.popup(f"Aucun read TRGT pour {trid} dans le spanning BAM.")
-                            continue
                 
                         # Ouvrir IGV
                         open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
