@@ -26,6 +26,9 @@ def find_spanning_bam(zip_path, sample):
                 bai = name + ".bai"
                 if bai in z.namelist():
                     return bam, bai
+            
+        print("DEBUG — sample recherché :", sample) 
+        print("DEBUG — contenu du ZIP :", z.namelist())
 
     return None
 
