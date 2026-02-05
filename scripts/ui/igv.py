@@ -46,16 +46,20 @@ def find_spanning_bam(zip_path):
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
-    """
-    sample_name n'est plus utilisé.
-    """
-    zip_path = os.path.join(base_dir, f"{analyse_prefix}spanning_BAM.zip")
     print("\n=== DEBUG get_available_spanning_bam ===")
     print("BASE DIR =", base_dir)
     print("ANALYSE PREFIX =", analyse_prefix)
-    print("ZIP CONSTRUIT =", zip_path)
 
-    return find_spanning_bam(zip_path)
+    # Chercher un ZIP contenant "spanning" dans le nom
+    for f in os.listdir(base_dir):
+        if "spanning" in f.lower() and f.lower().endswith(".zip"):
+            zip_path = os.path.join(base_dir, f)
+            print("ZIP TROUVÉ AUTOMATIQUEMENT :", zip_path)
+            return find_spanning_bam(zip_path)
+
+    print("AUCUN ZIP SPANNING TROUVÉ DANS LE DOSSIER.")
+    return None
+
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
