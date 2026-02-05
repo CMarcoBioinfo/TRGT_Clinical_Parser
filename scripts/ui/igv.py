@@ -10,7 +10,7 @@ import PySimpleGUI as sg
 
 
 # Suffixe standard des archives TRGT contenant les spanning BAM
-SPANNING_ARCHIVE_SUFFIX = "_spanning_BAM.zip"
+SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
 def igv_available():
