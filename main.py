@@ -58,7 +58,8 @@ def main():
         [sg.Text("Sélection du fichier TRGT (trgt_vcf.zip)")],
         [sg.Input(key="-ZIP-", enable_events=True), sg.FileBrowse("Parcourir")],
         [sg.Text("Sample à analyser")],
-        [sg.Combo([], key="-SAMPLE-", size=(40,1))],
+        [sg.Input(key="-SEARCH-", enable_events=True, size=(40,1))],
+        [sg.Combo([], key="-SAMPLE-", size=(40,1), readonly=True)],
         [sg.Text("Maladies à analyser")],
     ]
 
@@ -108,8 +109,28 @@ def main():
             if zip_path:
                 samples = list_vcfs(zip_path)
                 display = [os.path.basename(s) for s in samples]
-                window.metadata = dict(zip(display, samples))
+                window.metadata = {
+                    "map": dict(zip(display, samples))
+                    "all_samples": display
+                }
                 window["-SAMPLE-"].update(values=display)
+
+        
+        if event == "-SEARCH-":
+            query = values["-SEARCH-"].lower()
+            all_samples = window.metadata.get("all_samples", [])
+        
+            if query:
+                filtered = [s for s in all_samples if query in s.lower()]
+            else:
+                filtered = all_samples
+        
+            window["-SAMPLE-"].update(values=filtered)
+        
+            # Optionnel : si un seul résultat, on le sélectionne automatiquement
+            if len(filtered) == 1:
+                window["-SAMPLE-"].update(filtered[0])
+
 
         # Lancer l'analyse
         if event == "Lancer l'analyse":
