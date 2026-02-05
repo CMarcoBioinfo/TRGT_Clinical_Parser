@@ -115,13 +115,15 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
 
         print("BAM PATH =", bam_path)
 
-        # Trouver IGV automatiquement
         launcher = find_igv_launcher()
 
         if launcher:
             print("LANCEMENT IGV AVEC :", launcher)
             try:
-                subprocess.Popen([launcher, bam_path, region])
+                subprocess.Popen(
+                    [launcher, bam_path, region],
+                    cwd=os.path.dirname(launcher)  # <<< INDISPENSABLE
+                )
                 print("IGV LANCÉ ✔")
                 sg.popup("IGV a été lancé.")
                 return
@@ -132,5 +134,4 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
 
         print("IGV NON TROUVÉ ✘")
         sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")
-
 
