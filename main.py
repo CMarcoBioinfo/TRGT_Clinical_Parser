@@ -1,6 +1,7 @@
 import PySimpleGUI as sg
 import zipfile
 import tempfile
+import shutil
 import os
 
 from scripts.core.orchestrator import process_sample
@@ -269,6 +270,13 @@ def main():
                     save_and_open_html(html)
 
                 if ev == "-IGV-":
+                
+                    # Vérifier si IGV est installé AVANT de faire quoi que ce soit
+                    if not (shutil.which("igv.sh") or shutil.which("igv.bat")):
+                        sg.popup("IGV n'est pas installé sur ce poste.\n\n"
+                                 "Veuillez installer IGV pour utiliser cette fonctionnalité.")
+                        continue
+                
                     spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_name)
                 
                     if not spanning:
@@ -293,6 +301,7 @@ def main():
                 
                         # Ouvrir IGV
                         open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
+
 
     window.close()
 
