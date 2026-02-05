@@ -1,4 +1,10 @@
-import os, zipfile, io, webbrowser, tempfile, threading, time
+import os
+import zipfile
+import io
+import webbrowser
+import tempfile
+import threading
+import time
 
 
 # Les suffixes des archives de plots
