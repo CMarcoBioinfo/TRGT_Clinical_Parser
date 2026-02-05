@@ -110,7 +110,7 @@ def main():
                 samples = list_vcfs(zip_path)
                 display = [os.path.basename(s) for s in samples]
                 window.metadata = dict(zip(display, samples))
-                window.metadate["all_samples"] = display
+                window.metadata["all_samples"] = display
                 window["-SAMPLE-"].update(values=display)
 
         
