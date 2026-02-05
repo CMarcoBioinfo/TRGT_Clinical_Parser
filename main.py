@@ -267,11 +267,10 @@ def main():
                 if ev == "-IGV-":
                 
                     spanning = get_available_spanning_bam(base_dir, analyse_prefix, sample_internal)
-
                 
-                    # if not spanning:
-                    #     sg.popup("Aucun spanning BAM disponible pour cet échantillon.")
-                    #     continue
+                    if not spanning:
+                        sg.popup("Aucun spanning BAM disponible pour cet échantillon.")
+                        continue
                 
                     zip_path, bam_file, bai_file = spanning
                 
