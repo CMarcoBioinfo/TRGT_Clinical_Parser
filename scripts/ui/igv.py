@@ -7,7 +7,24 @@ import PySimpleGUI as sg
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 
 
-def find_spanning_bam(zip_path, sample):
+def extract_trgt_prefix(sample_internal):
+    """
+    Extrait le préfixe TRGT à partir du chemin interne du VCF.
+    Exemple : folder/patient1.trgt.vcf -> patient1.trgt
+    """
+    base = os.path.basename(sample_internal)
+    if base.endswith(".trgt.vcf"):
+        return base.replace(".trgt.vcf", "")
+    if base.endswith(".vcf"):
+        return base.replace(".vcf", "")
+    return base
+
+
+def find_spanning_bam(zip_path, trgt_prefix):
+    """
+    Trouve le BAM correspondant au sample TRGT.
+    On cherche un fichier qui commence par le préfixe TRGT exact.
+    """
     if not os.path.exists(zip_path):
         return None
 
@@ -15,25 +32,21 @@ def find_spanning_bam(zip_path, sample):
         names = z.namelist()
 
         for name in names:
-            if sample in name and name.endswith(".sorted.spanning.bam"):
+            if name.startswith(trgt_prefix) and name.endswith(".sorted.spanning.bam"):
                 bam = name
                 bai = name + ".bai"
                 if bai in names:
                     return bam, bai
 
-        # DEBUG visible dans un EXE
-        sg.popup(
-            "DEBUG — sample recherché :", sample,
-            "\n\nDEBUG — contenu du ZIP :", "\n".join(names)
-        )
-
     return None
 
 
-
-def get_available_spanning_bam(base_dir, analyse_prefix, sample):
+def get_available_spanning_bam(base_dir, analyse_prefix, sample_internal):
     zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
-    result = find_spanning_bam(zip_path, sample)
+
+    trgt_prefix = extract_trgt_prefix(sample_internal)
+
+    result = find_spanning_bam(zip_path, trgt_prefix)
 
     if result:
         bam_file, bai_file = result
@@ -43,9 +56,6 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample):
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
-    """
-    Extrait le spanning BAM dans un dossier temporaire et tente de lancer IGV.
-    """
     with tempfile.TemporaryDirectory() as tmpdir:
         with zipfile.ZipFile(zip_path, "r") as z:
             z.extract(bam_file, tmpdir)
@@ -54,9 +64,9 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
         bam_path = os.path.join(tmpdir, bam_file)
         region = f"{chrom}:{start}-{end}"
 
-        possible_cmds = ["igv.bat", "igv.exe", "igv.sh", "igv"]
+        cmds = ["igv.bat", "igv.exe", "igv.sh", "igv"]
 
-        for cmd in possible_cmds:
+        for cmd in cmds:
             try:
                 subprocess.Popen([cmd, bam_path, region])
                 sg.popup("IGV a été lancé.")
@@ -67,7 +77,4 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
                 sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
                 return
 
-        sg.popup(
-            "Impossible de lancer IGV.\n\n"
-            "IGV n'est pas installé ou n'est pas dans le PATH."
-        )
+        sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas dans le PATH.")
