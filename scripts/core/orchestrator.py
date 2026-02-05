@@ -10,6 +10,7 @@ from scripts.bio.genotype_compute import build_genotype
 from scripts.bio.clinical_classifier import classify_allele
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
+from scripts.ui.igv import get_available_spanning_bam
 
 
 def process_orientation(r, orientation):
@@ -203,7 +204,6 @@ def process_plots(r, base_dir, prefix, sample_name):
     return r
 
 def process_igv(r, base_dir, prefix, sample_name):
-    zip_path = os.path.join(base_dir, f"{prefix}spanning_BAM.zip")
-    spanning = find_spanning_bam(zip_path, sample_internal)
+    spanning = get_available_spanning_bam(base_dir, prefix, sample_name)
     r["IGV_links"] = spanning if spanning else None
     return r
