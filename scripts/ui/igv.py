@@ -34,7 +34,7 @@ def find_spanning_bam(zip_path, trgt_prefix):
         for name in names:
             if name.startswith(trgt_prefix) and name.endswith(".sorted.spanning.bam"):
                 bam = name
-                bai = name + ".bai"
+                bai = bam + ".bai"
                 if bai in names:
                     return bam, bai
 
@@ -42,6 +42,11 @@ def find_spanning_bam(zip_path, trgt_prefix):
 
 
 def get_available_spanning_bam(base_dir, analyse_prefix, sample_internal):
+    """
+    Identique à la logique des plots :
+    - on dérive un identifiant TRGT exact
+    - on cherche le fichier interne correspondant
+    """
     zip_path = os.path.join(base_dir, f"{analyse_prefix}{SPANNING_ARCHIVE_SUFFIX}")
 
     trgt_prefix = extract_trgt_prefix(sample_internal)
@@ -56,17 +61,21 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample_internal):
 
 
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
+    """
+    Comme open_svg(), mais avec un seul niveau :
+    - ouvrir le ZIP externe
+    - extraire le fichier interne
+    - l’ouvrir dans IGV
+    """
     with tempfile.TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(zip_path, "r") as z:
-            z.extract(bam_file, tmpdir)
-            z.extract(bai_file, tmpdir)
+        with zipfile.ZipFile(zip_path, "r") as outer:
+            outer.extract(bam_file, tmpdir)
+            outer.extract(bai_file, tmpdir)
 
         bam_path = os.path.join(tmpdir, bam_file)
         region = f"{chrom}:{start}-{end}"
 
-        cmds = ["igv.bat", "igv.exe", "igv.sh", "igv"]
-
-        for cmd in cmds:
+        for cmd in ["igv.bat", "igv.exe", "igv.sh", "igv"]:
             try:
                 subprocess.Popen([cmd, bam_path, region])
                 sg.popup("IGV a été lancé.")
