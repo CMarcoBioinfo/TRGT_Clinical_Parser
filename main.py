@@ -58,7 +58,8 @@ def main():
         [sg.Text("Sélection du fichier TRGT (trgt_vcf.zip)")],
         [sg.Input(key="-ZIP-", enable_events=True), sg.FileBrowse("Parcourir")],
         [sg.Text("Sample à analyser")],
-        [sg.Combo([], key="-SAMPLE-", size=(40,1), enable_events=True)],
+        [sg.Input(key="-SEARCH-", enable_events=True, size=(40,1))],
+        [sg.Combo([], key="-SAMPLE-", size=(40,1), readonly=True)],
         [sg.Text("Maladies à analyser")],
     ]
 
@@ -112,25 +113,19 @@ def main():
                 window.metadata["all_samples"] = display
                 window["-SAMPLE-"].update(values=display)
 
-        if event == "-SAMPLE-":
-            typed = values["-SAMPLE-"]
+        if event == "-SEARCH-":
+            query = values["-SEARCH-"].lower()
+            all_samples = window.metadata.get("all_samples", [])
         
-            # Si l'utilisateur n'a rien tapé → afficher tout
-            if not typed:
-                window["-SAMPLE-"].update(values=window.metadata["all_samples"])
-                return
+            if query:
+                filtered = [s for s in all_samples if query in s.lower()]
+            else:
+                filtered = all_samples
         
-            typed_lower = typed.lower()
-            all_samples = window.metadata["all_samples"]
-        
-            # Filtrage
-            filtered = [s for s in all_samples if typed_lower in s.lower()]
-        
-            # Mise à jour de la liste
             window["-SAMPLE-"].update(values=filtered)
         
-            # Garder ce que l'utilisateur a tapé
-            window["-SAMPLE-"].update(value=typed)
+            if len(filtered) == 1:
+                window["-SAMPLE-"].update(filtered[0])
 
         # Lancer l'analyse
         if event == "Lancer l'analyse":
