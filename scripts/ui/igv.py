@@ -97,6 +97,7 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
 # ---------------------------------------------------------
 #  Extraction + lancement IGV
 # ---------------------------------------------------------
+
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     print("\n=== DEBUG open_igv ===")
     print("ZIP =", zip_path)
@@ -104,34 +105,37 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     print("BAI =", bai_file)
     print("REGION =", chrom, start, end)
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(zip_path, "r") as outer:
-            print("Extraction dans :", tmpdir)
-            outer.extract(bam_file, tmpdir)
-            outer.extract(bai_file, tmpdir)
+    # IMPORTANT : dossier temporaire persistant
+    tmpdir = tempfile.mkdtemp()
+    print("Extraction dans :", tmpdir)
 
-        bam_path = os.path.join(tmpdir, bam_file)
-        region = f"{chrom}:{start}-{end}"
+    with zipfile.ZipFile(zip_path, "r") as outer:
+        outer.extract(bam_file, tmpdir)
+        outer.extract(bai_file, tmpdir)
 
-        print("BAM PATH =", bam_path)
+    bam_path = os.path.join(tmpdir, bam_file)
+    region = f"{chrom}:{start}-{end}"
 
-        launcher = find_igv_launcher()
+    print("BAM PATH =", bam_path)
 
-        if launcher:
-            print("LANCEMENT IGV AVEC :", launcher)
-            try:
-                subprocess.Popen(
-                    [launcher, bam_path, region],
-                    cwd=os.path.dirname(launcher)  # <<< INDISPENSABLE
-                )
-                print("IGV LANCÉ ✔")
-                sg.popup("IGV a été lancé.")
-                return
-            except Exception as e:
-                print("ERREUR IGV :", e)
-                sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
-                return
+    launcher = find_igv_launcher()
 
-        print("IGV NON TROUVÉ ✘")
-        sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")
+    if launcher:
+        print("LANCEMENT IGV AVEC :", launcher)
+        try:
+            subprocess.Popen(
+                [launcher, bam_path, region],
+                cwd=os.path.dirname(launcher)
+            )
+            print("IGV LANCÉ ✔")
+            sg.popup("IGV a été lancé.")
+            return
+        except Exception as e:
+            print("ERREUR IGV :", e)
+            sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
+            return
+
+    print("IGV NON TROUVÉ ✘")
+    sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")
+
 
