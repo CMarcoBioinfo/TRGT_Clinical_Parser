@@ -219,20 +219,27 @@ CANVAS_RFC1:
               version: "2025"
 
     motif_properties:
-        clearly_pathogenic_motifs: ["AAGGG", "AAAGG"]
-        rare_pathogenic_motifs: ["ACAGG", "AGGGC", "AGAGC", "AAGGC"]
-        non_pathogenic_motifs: ["AAAAG", "AAGAG", "AAAGGG"]
-        vus_motifs: ["AGGGG", "ACAAG", "ACGGG"]
+        pathogenic_motifs: ["AAGGG", "AAAGG", "ACAGG", "AGGGC"]
         pure_only: false
+
         motif_groups:
-            - ["AAGGG", "AAAGG"]
+            - ["AAGGG"]
+            - ["AAAGG"]
+            - ["ACAGG"]
+            - ["AGGGC"]
 
     thresholds:
         AAGGG:
-            pathogenic_complete: [250, null]
+            pathogenic_complete: [500, null]
 
         AAAGG:
-            pathogenic_complete: [500, null]
+            pathogenic_complete: [200, null]
+
+        ACAGG:
+            pathogenic_complete: [200, null]
+
+        AGGGC:
+            pathogenic_complete: [200, null]
 
 
 FTDALS1_C9orf72:
