@@ -19,6 +19,9 @@ ADVANCED_STRUCTURAL = {
     "FRDA_FXN"
 }
 
+MOTIF_DEPENDENT_LOCI = {
+    "CANVAS_RFC1"
+}
 
 # -------------------------
 # CLASSIFICATION PRINCIPALE
@@ -45,6 +48,10 @@ def classify_allele(trid, genotype, interruptions, thresholds_data):
     # 3) Cas structurel avancé : FXN
     if trid in ADVANCED_STRUCTURAL:
         return classify_fxn(genotype, interruptions, locus)
+
+    # 4) Cas motif-dépendant : CANVAS
+    if trid in MOTIF_DEPENDENT_LOCI:
+        return classify_canvas(genotype, locus)
 
     # 4) RFC1 sera ajouté plus tard
     return "unclassified"
@@ -127,3 +134,42 @@ def classify_fxn(genotype, interruptions, locus):
         return cond["classification"]
 
     return classify_simple(genotype, locus["thresholds"])
+
+
+def classify_canvas(genotype, locus):
+    """
+    Classification clinique pour CANVAS :
+    - génotype = "620 (AAGGG)"
+    - on extrait le motif et le nombre
+    - on applique le seuil correspondant au motif
+    """
+
+    if genotype is None:
+        return None
+
+    # exemple : "620 (AAGGG)"
+    parts = genotype.split()
+    if len(parts) < 2:
+        return None
+
+    # nombre
+    try:
+        count = int(parts[0])
+    except:
+        return None
+
+    # motif entre parenthèses
+    motif = parts[1].strip("()")
+
+    thresholds = locus["thresholds"]
+
+    # si le motif a un seuil dédié
+    if motif in thresholds:
+        low, high = thresholds[motif]["pathogenic"]
+        if count >= low:
+            return "pathogenic"
+        else:
+            return "normal"
+
+    # sinon → motif non pathogène
+    return "normal"
