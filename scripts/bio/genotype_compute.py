@@ -11,7 +11,7 @@ def build_genotype(trid, repetitions, thresholds_data):
     motif_props = get_motif_properties(trid, thresholds_data)
 
     if trid == "CANVAS_RFC1":
-        return "complexe"
+        return compute_canvas_genotype(repetitions, motif_props)
 
     return compute_genotype(repetitions, motif_props)
 
