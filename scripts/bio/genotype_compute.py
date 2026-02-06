@@ -60,6 +60,43 @@ def compute_genotype(repetitions, motif_props):
     return total
 
 
+def compute_canvas_genotype(repetitions, motif_props):
+    """
+    Pour CANVAS : on prend le motif majoritaire et son nombre.
+    """
+    blocks = repetitions.split("_")
+
+    # extraire tous les motifs pathogènes possibles
+    patho_motifs = motif_props["pathogenic_motifs"]
+
+    best_motif = None
+    best_count = -1
+
+    for block in blocks:
+        # block = "AAGGG(620)" ou "AAAAG(12)"
+        if "(" not in block:
+            continue
+
+        motif, rest = block.split("(", 1)
+        motif = motif.strip()
+        count = rest.split(")", 1)[0]
+
+        if not count.isdigit():
+            continue
+
+        count = int(count)
+
+        # on garde le motif majoritaire
+        if count > best_count:
+            best_count = count
+            best_motif = motif
+
+    if best_motif is None:
+        return None
+
+    return f"{best_count} ({best_motif})"
+
+
 def extract_main_block(repetitions, motif_groups):
     """
     Retourne le bloc contenant un des motifs principaux
