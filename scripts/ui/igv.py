@@ -3,15 +3,14 @@ import zipfile
 import tempfile
 import subprocess
 import PySimpleGUI as sg
-import glob
-import requests
+import urllib.request
+import urllib.error
 import shutil
 import time
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
 PADDING = 50  # marge autour de la région TRGT
 
-# Cache global pour gérer le BAM temporaire
 CURRENT_TMPDIR = None
 CURRENT_BAM = None
 
@@ -21,7 +20,7 @@ CURRENT_BAM = None
 # ---------------------------------------------------------
 def igv_is_running():
     try:
-        requests.get("http://localhost:60151/status", timeout=0.2)
+        urllib.request.urlopen("http://localhost:60151/status", timeout=0.2)
         return True
     except:
         return False
@@ -31,8 +30,11 @@ def igv_is_running():
 #  API IGV : charger un BAM
 # ---------------------------------------------------------
 def igv_load(bam_path):
-    print("IGV LOAD :", bam_path)
-    requests.get(f"http://localhost:60151/load?file={bam_path}")
+    url = f"http://localhost:60151/load?file={bam_path}"
+    try:
+        urllib.request.urlopen(url)
+    except Exception as e:
+        print("Erreur IGV LOAD :", e)
 
 
 # ---------------------------------------------------------
@@ -42,8 +44,11 @@ def igv_goto(chrom, start, end, padding=PADDING):
     start_padded = max(0, start - padding)
     end_padded = end + padding
     region = f"{chrom}:{start_padded}-{end_padded}"
-    print("IGV GOTO :", region)
-    requests.get(f"http://localhost:60151/goto?locus={region}")
+    url = f"http://localhost:60151/goto?locus={region}"
+    try:
+        urllib.request.urlopen(url)
+    except Exception as e:
+        print("Erreur IGV GOTO :", e)
 
 
 # ---------------------------------------------------------
