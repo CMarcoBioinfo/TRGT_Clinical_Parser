@@ -7,7 +7,7 @@ from scripts.bio.clinical_thresholds_loader import get_locus_config
 
 SIMPLE_LOCI = {
     "SCA2_ATXN2", "SCA3_ATXN3", "SCA6_CACNA1A",
-    "SCA7_ATXN7", "SCA17_TBP", "FTDALS1_C9orf72",
+    "SCA7_ATXN7", "SCA17_TBP", "SCA36_NOP56", "FTDALS1_C9orf72",
     "FXS_FMR1", "OPDM1_LRP12"
 }
 
