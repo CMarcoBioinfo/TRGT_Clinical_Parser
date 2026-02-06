@@ -6,6 +6,7 @@ patho_motifs:
     SCA7_ATXN7: ["CAG"]
     SCA17_TBP: ["CAG", "CAA"]
     SCA27B_FGF14: ["GAA"]
+    SCA36_NO56: ["GGCCTG"]
     FRDA_FXN: ["GAA", "GAAA", "GAAGAAA"]
     CANVAS_RFC1: ["AAAGG", "AAGGG", "ACAGG", "AGGGC"]
     FTDALS1_C9orf72: ["GGGGCC"]
