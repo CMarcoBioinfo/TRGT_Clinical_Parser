@@ -230,16 +230,16 @@ CANVAS_RFC1:
 
     thresholds:
         AAGGG:
-            pathogenic_complete: [500, null]
+            pathogenic: [500, null]
 
         AAAGG:
-            pathogenic_complete: [200, null]
+            pathogenic: [200, null]
 
         ACAGG:
-            pathogenic_complete: [200, null]
+            pathogenic: [200, null]
 
         AGGGC:
-            pathogenic_complete: [200, null]
+            pathogenic: [200, null]
 
 
 FTDALS1_C9orf72:
