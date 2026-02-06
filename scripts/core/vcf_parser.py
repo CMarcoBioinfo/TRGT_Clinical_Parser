@@ -9,6 +9,7 @@ TRID_TO_GENE = {
     "SCA6_CACNA1A": "CACNA1A",
     "SCA7_ATXN7": "ATXN7",
     "SCA17_TBP": "TBP",
+    "SCA36_NOP56": "NOP56",
     "CANVAS_RFC1": "RFC1",
     "FRDA_FXN": "FXN",
     "FTDALS1_C9orf72": "C9orf72",
