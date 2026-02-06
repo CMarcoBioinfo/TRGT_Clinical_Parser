@@ -7,7 +7,7 @@ import os
 from scripts.core.orchestrator import process_sample
 from scripts.ui.plots import get_analysis_prefix, open_svg
 from scripts.ui.html_export import generate_html_table, save_and_open_html
-from scripts.ui.igv import get_available_spanning_bam, open_igv
+from scripts.ui.igv import get_available_spanning_bam, open_igv, cleanup_tmpdir_force
 
 
 import ctypes
@@ -231,6 +231,7 @@ def main():
                 ev, vals = table_window.read()
 
                 if ev in (sg.WINDOW_CLOSED, "Fermer"):
+                    cleanup_tmpdir_force()
                     table_window.close()
                     window.bring_to_front()
                     break
