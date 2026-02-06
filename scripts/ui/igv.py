@@ -9,7 +9,7 @@ import shutil
 import time
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
-PADDING = 50  # marge autour de la région TRGT
+PADDING = 50
 
 CURRENT_TMPDIR = None
 CURRENT_BAM = None
@@ -27,12 +27,29 @@ def igv_is_running():
 
 
 # ---------------------------------------------------------
+#  Attendre que l’API IGV soit prête
+# ---------------------------------------------------------
+def wait_for_igv(timeout=15):
+    start = time.time()
+    while time.time() - start < timeout:
+        try:
+            urllib.request.urlopen("http://localhost:60151/status", timeout=0.2)
+            print("IGV API prête ✔")
+            return True
+        except:
+            time.sleep(0.2)
+    print("IGV API NON prête ✘")
+    return False
+
+
+# ---------------------------------------------------------
 #  API IGV : charger un BAM
 # ---------------------------------------------------------
 def igv_load(bam_path):
     url = f"http://localhost:60151/load?file={bam_path}"
     try:
         urllib.request.urlopen(url)
+        print("BAM chargé ✔")
     except Exception as e:
         print("Erreur IGV LOAD :", e)
 
@@ -47,12 +64,24 @@ def igv_goto(chrom, start, end, padding=PADDING):
     url = f"http://localhost:60151/goto?locus={region}"
     try:
         urllib.request.urlopen(url)
+        print("Goto :", region)
     except Exception as e:
         print("Erreur IGV GOTO :", e)
 
 
 # ---------------------------------------------------------
-#  Trouver automatiquement IGV (toutes versions)
+#  Nettoyage forcé du dossier temporaire
+# ---------------------------------------------------------
+def cleanup_tmpdir_force():
+    global CURRENT_TMPDIR
+    if CURRENT_TMPDIR:
+        print("Nettoyage forcé du dossier temporaire")
+        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
+        CURRENT_TMPDIR = None
+
+
+# ---------------------------------------------------------
+#  Trouver automatiquement IGV
 # ---------------------------------------------------------
 def find_igv_launcher():
     print("\n=== DEBUG find_igv_launcher ===")
@@ -97,25 +126,13 @@ def find_spanning_bam(zip_path):
     with zipfile.ZipFile(zip_path, "r") as z:
         names = z.namelist()
 
-    print("CONTENU DU ZIP :")
-    for n in names:
-        print(" -", n)
-
     for n in names:
         if n.endswith(".sorted.spanning.bam"):
             bam = n
             bai = bam + ".bai"
-
-            print("BAM TROUVÉ :", bam)
-            print("BAI ATTENDU :", bai)
-
             if bai in names:
-                print("BAI TROUVÉ ✔")
                 return zip_path, bam, bai
-            else:
-                print("BAI MANQUANT ✘")
 
-    print("AUCUN BAM TRGT TROUVÉ DANS LE ZIP.")
     return None
 
 
@@ -123,30 +140,11 @@ def find_spanning_bam(zip_path):
 #  Trouver automatiquement le ZIP spanning_BAM.zip
 # ---------------------------------------------------------
 def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
-    print("\n=== DEBUG get_available_spanning_bam ===")
-    print("BASE DIR =", base_dir)
-    print("ANALYSE PREFIX =", analyse_prefix)
-
     for f in os.listdir(base_dir):
         if "spanning" in f.lower() and f.lower().endswith(".zip"):
             zip_path = os.path.join(base_dir, f)
-            print("ZIP TROUVÉ AUTOMATIQUEMENT :", zip_path)
             return find_spanning_bam(zip_path)
-
-    print("AUCUN ZIP SPANNING TROUVÉ DANS LE DOSSIER.")
     return None
-
-
-# ---------------------------------------------------------
-#  Suppression du dossier temporaire si IGV est fermé
-# ---------------------------------------------------------
-def cleanup_tmp_if_igv_closed():
-    global CURRENT_TMPDIR
-
-    if CURRENT_TMPDIR and not igv_is_running():
-        print("IGV fermé → suppression du dossier temporaire")
-        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
-        CURRENT_TMPDIR = None
 
 
 # ---------------------------------------------------------
@@ -161,7 +159,7 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     print("BAI =", bai_file)
     print("REGION =", chrom, start, end)
 
-    # 1) IGV déjà ouvert → juste déplacement
+    # 1) IGV déjà ouvert → juste goto
     if igv_is_running():
         print("IGV déjà ouvert → déplacement uniquement")
         igv_goto(chrom, start, end)
@@ -179,7 +177,6 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     CURRENT_BAM = bam_path
 
     launcher = find_igv_launcher()
-
     if not launcher:
         sg.popup("Impossible de trouver IGV.")
         return
@@ -187,19 +184,13 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     print("LANCEMENT IGV AVEC :", launcher)
     subprocess.Popen([launcher], cwd=os.path.dirname(launcher))
 
-    # On laisse IGV démarrer
-    time.sleep(2)
+    # Attendre que l’API IGV soit prête
+    if not wait_for_igv():
+        sg.popup("IGV n'a pas démarré correctement.")
+        return
 
     # Charger le BAM + aller à la région
     igv_load(bam_path)
     igv_goto(chrom, start, end)
 
     sg.popup("IGV a été lancé.")
-
-def cleanup_tmpdir_force():
-    global CURRENT_TMPDIR
-
-    if CURRENT_TMPDIR:
-        print("Nettoyage forcé du dossier temporaire")
-        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
-        CURRENT_TMPDIR = None
