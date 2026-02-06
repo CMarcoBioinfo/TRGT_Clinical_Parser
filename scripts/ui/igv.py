@@ -195,3 +195,11 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
     igv_goto(chrom, start, end)
 
     sg.popup("IGV a été lancé.")
+
+def cleanup_tmpdir_force():
+    global CURRENT_TMPDIR
+
+    if CURRENT_TMPDIR:
+        print("Nettoyage forcé du dossier temporaire")
+        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
+        CURRENT_TMPDIR = None
