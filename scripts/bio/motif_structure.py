@@ -2,6 +2,7 @@ from scripts.bio.clinical_thresholds_loader import get_motif_properties
 from scripts.ui.formatters import parse_motif_counts, parse_segmentation
 from scripts.core.motif_utils import extract_group_motifs, compute_interruption_bp, compute_m
 
+
 def build_motif(trid, repetitions, interruptions, segmentation, thresholds_data):
     """
     Prépare les données et lance la construction du motif selon le locus.
@@ -56,7 +57,8 @@ def build_simple_motif(repetitions, interruptions, segmentation, motif_props):
     else: 
         others_str = ""
 
-    rep_string = f"{names}({counts}){others_str}"
+    icon_patho = "\U0001F534"
+    rep_string = f"{icon_patho}{names}({counts}){others_str}"
     return rep_string
 
 
@@ -142,5 +144,6 @@ def build_fxn_motif(repetitions, interruptions, segmentation, motif_props):
     else:
         others_str = ""
 
-    rep_string = f"{main}({counts}){others_str}"
+    icon_patho = "\U0001F534"
+    rep_string = f"{icon_patho}{main}({counts}){others_str}"
     return rep_string
