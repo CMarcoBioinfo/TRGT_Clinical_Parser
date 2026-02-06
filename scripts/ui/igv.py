@@ -4,8 +4,46 @@ import tempfile
 import subprocess
 import PySimpleGUI as sg
 import glob
+import requests
+import shutil
+import time
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
+PADDING = 50  # marge autour de la région TRGT
+
+# Cache global pour gérer le BAM temporaire
+CURRENT_TMPDIR = None
+CURRENT_BAM = None
+
+
+# ---------------------------------------------------------
+#  API IGV : détecter si IGV est ouvert
+# ---------------------------------------------------------
+def igv_is_running():
+    try:
+        requests.get("http://localhost:60151/status", timeout=0.2)
+        return True
+    except:
+        return False
+
+
+# ---------------------------------------------------------
+#  API IGV : charger un BAM
+# ---------------------------------------------------------
+def igv_load(bam_path):
+    print("IGV LOAD :", bam_path)
+    requests.get(f"http://localhost:60151/load?file={bam_path}")
+
+
+# ---------------------------------------------------------
+#  API IGV : aller à une région (avec padding)
+# ---------------------------------------------------------
+def igv_goto(chrom, start, end, padding=PADDING):
+    start_padded = max(0, start - padding)
+    end_padded = end + padding
+    region = f"{chrom}:{start_padded}-{end_padded}"
+    print("IGV GOTO :", region)
+    requests.get(f"http://localhost:60151/goto?locus={region}")
 
 
 # ---------------------------------------------------------
@@ -36,7 +74,7 @@ def find_igv_launcher():
         except PermissionError:
             continue
 
-    print("AUCUN igv_launcher.bat trouvé automatiquement.")
+    print("AUCUN lanceur IGV trouvé automatiquement.")
     return None
 
 
@@ -95,47 +133,60 @@ def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
 
 
 # ---------------------------------------------------------
-#  Extraction + lancement IGV
+#  Suppression du dossier temporaire si IGV est fermé
 # ---------------------------------------------------------
+def cleanup_tmp_if_igv_closed():
+    global CURRENT_TMPDIR
 
+    if CURRENT_TMPDIR and not igv_is_running():
+        print("IGV fermé → suppression du dossier temporaire")
+        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
+        CURRENT_TMPDIR = None
+
+
+# ---------------------------------------------------------
+#  Extraction + lancement IGV (intelligent)
+# ---------------------------------------------------------
 def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
+    global CURRENT_TMPDIR, CURRENT_BAM
+
     print("\n=== DEBUG open_igv ===")
     print("ZIP =", zip_path)
     print("BAM =", bam_file)
     print("BAI =", bai_file)
     print("REGION =", chrom, start, end)
 
-    # IMPORTANT : dossier temporaire persistant
-    tmpdir = tempfile.mkdtemp()
-    print("Extraction dans :", tmpdir)
+    # 1) IGV déjà ouvert → juste déplacement
+    if igv_is_running():
+        print("IGV déjà ouvert → déplacement uniquement")
+        igv_goto(chrom, start, end)
+        return
+
+    # 2) IGV fermé → extraction + lancement
+    CURRENT_TMPDIR = tempfile.mkdtemp()
+    print("Extraction dans :", CURRENT_TMPDIR)
 
     with zipfile.ZipFile(zip_path, "r") as outer:
-        outer.extract(bam_file, tmpdir)
-        outer.extract(bai_file, tmpdir)
+        outer.extract(bam_file, CURRENT_TMPDIR)
+        outer.extract(bai_file, CURRENT_TMPDIR)
 
-    bam_path = os.path.join(tmpdir, bam_file)
-    region = f"{chrom}:{start}-{end}"
-
-    print("BAM PATH =", bam_path)
+    bam_path = os.path.join(CURRENT_TMPDIR, bam_file)
+    CURRENT_BAM = bam_path
 
     launcher = find_igv_launcher()
 
-    if launcher:
-        print("LANCEMENT IGV AVEC :", launcher)
-        try:
-            subprocess.Popen(
-                [launcher, bam_path, region],
-                cwd=os.path.dirname(launcher)
-            )
-            print("IGV LANCÉ ✔")
-            sg.popup("IGV a été lancé.")
-            return
-        except Exception as e:
-            print("ERREUR IGV :", e)
-            sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
-            return
+    if not launcher:
+        sg.popup("Impossible de trouver IGV.")
+        return
 
-    print("IGV NON TROUVÉ ✘")
-    sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")
+    print("LANCEMENT IGV AVEC :", launcher)
+    subprocess.Popen([launcher], cwd=os.path.dirname(launcher))
 
+    # On laisse IGV démarrer
+    time.sleep(2)
 
+    # Charger le BAM + aller à la région
+    igv_load(bam_path)
+    igv_goto(chrom, start, end)
+
+    sg.popup("IGV a été lancé.")
