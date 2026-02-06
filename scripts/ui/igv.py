@@ -6,7 +6,7 @@ import PySimpleGUI as sg
 import shutil
 
 SPANNING_ARCHIVE_SUFFIX = "spanning_BAM.zip"
-PADDING = 150
+PADDING = 100
 
 CURRENT_TMPDIR = None
 
