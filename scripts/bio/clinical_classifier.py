@@ -160,6 +160,7 @@ def classify_canvas(genotype, locus):
 
     # motif entre parenthèses
     motif = parts[1].strip("()")
+    motif = motif.lstrip("\U0001F534")
 
     thresholds = locus["thresholds"]
 
