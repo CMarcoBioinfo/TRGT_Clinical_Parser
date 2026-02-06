@@ -94,7 +94,8 @@ def compute_canvas_genotype(repetitions, motif_props):
     if best_motif is None:
         return None
         
-    icon_patho = "\U0001F534"
+    icon_patho = "\U0001F534" if best_motif in patho_motifs else ""
+        
     return f"{best_count} ({icon_patho}{best_motif})"
 
 
