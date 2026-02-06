@@ -150,6 +150,24 @@ SCA27B_FGF14:
             classification: "intermediate"
 
 
+SCA36_NOP56:
+    source:
+        document: "Erdmann et al"
+        version: "2025"
+
+    motif_properties:
+        pathogenic_motifs: ["GGCCTG"]
+        pure_only: false
+        motif_groups:
+            - ["GGCCTG"]
+
+    thresholds:
+        normal: [3, 14]
+        pathogenic_complete: [650, null]
+
+    structure_rules: []
+
+
 FRDA_FXN:
     source:
         documents:
