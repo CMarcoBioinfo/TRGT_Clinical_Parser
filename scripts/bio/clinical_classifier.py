@@ -136,6 +136,10 @@ def classify_fxn(genotype, interruptions, locus):
     return classify_simple(genotype, locus["thresholds"])
 
 
+# -------------------------------------
+# FAMILLE D : CANVAS (Motif dependance)
+# -------------------------------------
+
 def classify_canvas(genotype, locus):
     """
     Classification clinique pour CANVAS :
