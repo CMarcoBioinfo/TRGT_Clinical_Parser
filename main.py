@@ -37,6 +37,7 @@ DISEASES = {
     "SCA7": "SCA7_ATXN7",
     "SCA17 (TBP)": "SCA17_TBP",
     "SCA27B (FGF14)": "SCA27B_FGF14",
+    "SCA36 (NOP56)": "SCA36_NOP56",
     "C9orf72": "FTDALS1_C9orf72",
     "OPDM1 (LRP12)": "OPDM1_LRP12",
     "FXTAS (FMR1)": "FXS_FMR1",
@@ -51,7 +52,8 @@ SCA_GROUP = [
     "SCA6 (CACNA1A)",
     "SCA7",
     "SCA17 (TBP)",
-    "SCA27B (FGF14)"
+    "SCA27B (FGF14)",
+    "SCA36 (NOP56)"
 ]
 
 ATAXIE_GROUP = ["FRDA (FXN)", "CANVAS (RFC1)"] + SCA_GROUP
