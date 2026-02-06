@@ -93,8 +93,9 @@ def compute_canvas_genotype(repetitions, motif_props):
 
     if best_motif is None:
         return None
-
-    return f"{best_count} ({best_motif})"
+        
+    icon_patho = "\U0001F534"
+    return f"{best_count} ({icon_patho}{best_motif})"
 
 
 def extract_main_block(repetitions, motif_groups):
