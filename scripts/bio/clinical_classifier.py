@@ -8,15 +8,11 @@ from scripts.bio.clinical_thresholds_loader import get_locus_config
 SIMPLE_LOCI = {
     "SCA2_ATXN2", "SCA3_ATXN3", "SCA6_CACNA1A",
     "SCA7_ATXN7", "SCA17_TBP", "SCA36_NOP56", "FTDALS1_C9orf72",
-    "FXS_FMR1", "OPDM1_LRP12"
+    "FXS_FMR1", "OPDM1_LRP12", "FRDA_FXN"
 }
 
 STRUCTURAL_LOCI = {
     "SCA1_ATXN1", "SCA27B_FGF14"
-}
-
-ADVANCED_STRUCTURAL = {
-    "FRDA_FXN"
 }
 
 MOTIF_DEPENDENT_LOCI = {
@@ -97,47 +93,8 @@ def classify_structural(genotype, interruptions, locus):
     return classify_simple(genotype, locus["thresholds"])
 
 
-# -------------------------
-# FAMILLE C : FXN (structure_rules + interruption_type)
-# -------------------------
-
-def classify_fxn(genotype, interruptions, locus):
-    rules = locus.get("structure_rules", [])
-
-    if interruptions:
-        motifs = [m.split("(")[0] for m in interruptions]
-        all_triplet = all(len(m) == 3 for m in motifs)
-        interruption_type = "triplet" if all_triplet else "nontriplet"
-    else:
-        interruption_type = None
-
-    for rule in rules:
-        cond = rule["conditions"]
-
-        rr = cond.get("repeat_range")
-        if rr:
-            low, high = rr
-            if genotype < low:
-                continue
-            if high is not None and genotype > high:
-                continue
-
-        if "interruptions" in cond:
-            if cond["interruptions"] != bool(interruptions):
-                continue
-
-        if "interruption_type" in cond:
-            if cond["interruption_type"] != interruption_type:
-                continue
-
-        # 🔴 ici la correction :
-        return cond["classification"]
-
-    return classify_simple(genotype, locus["thresholds"])
-
-
 # -------------------------------------
-# FAMILLE D : CANVAS (Motif dependance)
+# FAMILLE C : CANVAS (Motif dependance)
 # -------------------------------------
 
 def classify_canvas(genotype, locus):
