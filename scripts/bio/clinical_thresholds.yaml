@@ -188,26 +188,26 @@ FRDA_FXN:
         intermediate: [34, 84]
         pathogenic_complete: [85, null]
 
-    structure_rules:
-        - conditions:
-              repeat_range: [34, 84]
-              interruption_type: "triplet"
-              classification: "normal"
+    structure_rules: []
+        # - conditions:
+        #       repeat_range: [34, 84]
+        #       interruption_type: "triplet"
+        #       classification: "normal"
 
-        - conditions:
-              repeat_range: [34, 84]
-              interruption_type: "nontriplet"
-              classification: "pathogenic_incomplete"
+        # - conditions:
+        #       repeat_range: [34, 84]
+        #       interruption_type: "nontriplet"
+        #       classification: "pathogenic_incomplete"
 
-        - conditions:
-              repeat_range: [85, null]
-              interruptions: false
-              classification: "pathogenic_complete"
+        # - conditions:
+        #       repeat_range: [85, null]
+        #       interruptions: false
+        #       classification: "pathogenic_complete"
 
-        - conditions:
-              repeat_range: [85, null]
-              interruptions: true
-              classification: "intermediate"
+        # - conditions:
+        #       repeat_range: [85, null]
+        #       interruptions: true
+        #       classification: "intermediate"
 
 
 CANVAS_RFC1:
@@ -240,6 +240,8 @@ CANVAS_RFC1:
 
         AGGGC:
             pathogenic: [200, null]
+        
+    structure_rules: []
 
 
 FTDALS1_C9orf72:
