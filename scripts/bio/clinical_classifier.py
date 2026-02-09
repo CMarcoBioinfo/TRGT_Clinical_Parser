@@ -41,15 +41,11 @@ def classify_allele(trid, genotype, interruptions, thresholds_data):
     if trid in STRUCTURAL_LOCI:
         return classify_structural(genotype, interruptions, locus)
 
-    # 3) Cas structurel avancé : FXN
-    if trid in ADVANCED_STRUCTURAL:
-        return classify_fxn(genotype, interruptions, locus)
-
-    # 4) Cas motif-dépendant : CANVAS
+    # 3) Cas motif-dépendant : CANVAS
     if trid in MOTIF_DEPENDENT_LOCI:
         return classify_canvas(genotype, locus)
 
-    # 4) RFC1 sera ajouté plus tard
+    # 4) Pas pris en compte
     return "unclassified"
 
 
