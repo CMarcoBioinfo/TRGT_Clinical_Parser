@@ -38,9 +38,9 @@ DISEASES = {
     "SCA17 (TBP)": "SCA17_TBP",
     "SCA27B (FGF14)": "SCA27B_FGF14",
     "SCA36 (NOP56)": "SCA36_NOP56",
+    "FXTAS (FMR1)": "FXS_FMR1",
     "C9orf72": "FTDALS1_C9orf72",
     "OPDM1 (LRP12)": "OPDM1_LRP12",
-    "FXTAS (FMR1)": "FXS_FMR1",
 }
 
 TRID_ORDER = { DISEASES[name]: i for i, name in enumerate(DISEASES) }
@@ -56,7 +56,7 @@ SCA_GROUP = [
     "SCA36 (NOP56)"
 ]
 
-ATAXIE_GROUP = ["FRDA (FXN)", "CANVAS (RFC1)"] + SCA_GROUP
+ATAXIE_GROUP = ["FRDA (FXN)", "CANVAS (RFC1)", "FXTAS (FMR1)"] + SCA_GROUP
 
 
 def list_vcfs(zip_path):
