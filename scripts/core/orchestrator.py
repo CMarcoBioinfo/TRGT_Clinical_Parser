@@ -32,6 +32,7 @@ def process_orientation(r, orientation):
     r["_motifs_used"] = motifs
     r["_seq1"] = seq1
     r["_seq2"] = seq2
+    
     return r
 
 
@@ -138,6 +139,10 @@ def process_marking(r, patho_motifs, uncertain_motifs, icons):
     
     r["Segmentation1"] = mark_segmentation(r["Segmentation1"], trid, patho_motifs, uncertain_motifs, icons)
     r["Segmentation2"] = mark_segmentation(r["Segmentation2"], trid, patho_motifs, uncertain_motifs, icons)
+    if r.get("SegmentationComplete1"):
+        r["SegmentationComplete1"] = mark_segmentation(r["SegmentationComplete1"], trid, patho_motifs, uncertain_motifs, icons)
+    if r.get("SegmentationComplete2"):
+        r["SegmentationComplete2"] = mark_segmentation(r["SegmentationComplete2"], trid, patho_motifs, uncertain_motifs, icons)
     
     return r
 
@@ -192,7 +197,6 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
         r["Répétition2"] = sort_repeats(r["Répétition2"])
         r = process_plots(r, base_dir, prefix, sample_name)
         r = process_igv(r, base_dir, prefix, sample_name)
-
         
     return rows
 
