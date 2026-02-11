@@ -134,13 +134,26 @@ def find_spanning_bam(zip_path):
 # ---------------------------------------------------------
 #  Trouver automatiquement le ZIP spanning_BAM.zip
 # ---------------------------------------------------------
-def get_available_spanning_bam(base_dir, analyse_prefix, sample_name=None):
+def get_available_spanning_bam(base_dir, analyse_prefix=None, sample_name=None):
+    zip_candidates = []
+
     for f in os.listdir(base_dir):
         if "spanning" in f.lower() and f.lower().endswith(".zip"):
-            zip_path = os.path.join(base_dir, f)
-            return find_spanning_bam(zip_path)
-    return None
+            zip_candidates.append(f)
 
+    if not zip_candidates:
+        return None
+
+    # Si un sample est fourni, on filtre
+    if sample_name:
+        for f in zip_candidates:
+            if sample_name.lower() in f.lower():
+                zip_path = os.path.join(base_dir, f)
+                return find_spanning_bam(zip_path)
+
+    # Sinon on prend le premier ZIP
+    zip_path = os.path.join(base_dir, zip_candidates[0])
+    return find_spanning_bam(zip_path)
 
 # ---------------------------------------------------------
 #  Extraction + lancement IGV (mode CLI, fiable)
