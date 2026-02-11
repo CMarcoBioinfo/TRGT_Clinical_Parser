@@ -196,7 +196,7 @@ def process_sample(zip_path, vcf_filename, selected_trids, base_dir, prefix, sam
         r["Répétition1"] = sort_repeats(r["Répétition1"])
         r["Répétition2"] = sort_repeats(r["Répétition2"])
         r = process_plots(r, base_dir, prefix, sample_name)
-        r = process_igv(r, base_dir, prefix, sample_name)
+        r = process_igv(r, base_dir, sample_name)
         
     return rows
 
@@ -207,7 +207,7 @@ def process_plots(r, base_dir, prefix, sample_name):
     r["Plots_links"] = links if links else {}
     return r
 
-def process_igv(r, base_dir, prefix, sample_name):
-    spanning = get_available_spanning_bam(base_dir, prefix, sample_name)
+def process_igv(r, base_dir, sample_name):
+    spanning = get_available_spanning_bam(base_dir, sample_name)
     r["IGV_links"] = spanning if spanning else None
     return r
