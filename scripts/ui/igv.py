@@ -54,30 +54,47 @@ def find_igv_launcher():
     return None
 
 
+# ---------------------------------------------------------
+#  Trouver le BAM TRGT dans le ZIP
+# ---------------------------------------------------------
+def find_spanning_bam(zip_path, sample_name=None):
+    """
+    Retourne le BAM correspondant au sample_name dans le ZIP.
+    Si aucun BAM ne correspond, retourne None proprement.
+    """
+    if not os.path.exists(zip_path):
+        return None
+
+    with zipfile.ZipFile(zip_path, "r") as z:
+        names = z.namelist()
+
+    # Chercher un BAM qui contient le nom du sample
+    if sample_name:
+        for n in names:
+            if n.endswith(".sorted.spanning.bam") and sample_name.lower() in n.lower():
+                bam = n
+                bai = bam + ".bai"
+                if bai in names:
+                    return zip_path, bam, bai
+
+    # Aucun BAM correspondant → on sort proprement
+    return None
 
 # ---------------------------------------------------------
 #  Trouver automatiquement le ZIP spanning_BAM.zip
 # ---------------------------------------------------------
 def get_available_spanning_bam(base_dir, analyse_prefix=None, sample_name=None):
-    zip_candidates = []
-
+    """
+    Trouve le ZIP contenant les spanning BAM,
+    puis cherche le BAM correspondant au sample_name.
+    """
     for f in os.listdir(base_dir):
         if "spanning" in f.lower() and f.lower().endswith(".zip"):
-            zip_candidates.append(f)
+            zip_path = os.path.join(base_dir, f)
+            return find_spanning_bam(zip_path, sample_name)
 
-    if not zip_candidates:
-        return None
+    return None
 
-    # Si un sample est fourni, on filtre
-    if sample_name:
-        for f in zip_candidates:
-            if sample_name.lower() in f.lower():
-                zip_path = os.path.join(base_dir, f)
-                return find_spanning_bam(zip_path)
-
-    # Sinon on prend le premier ZIP
-    zip_path = os.path.join(base_dir, zip_candidates[0])
-    return find_spanning_bam(zip_path)
 
 # ---------------------------------------------------------
 #  Extraction + lancement IGV (mode CLI, fiable)
@@ -113,4 +130,121 @@ def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
             sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
             return
 
+    sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")import os
+import zipfile
+import tempfile
+import subprocess
+import PySimpleGUI as sg
+import shutil
+
+PADDING = 75
+CURRENT_TMPDIR = None
+
+
+# ---------------------------------------------------------
+#  Nettoyage forcé du dossier temporaire
+# ---------------------------------------------------------
+def cleanup_tmpdir_force():
+    global CURRENT_TMPDIR
+    if CURRENT_TMPDIR:
+        shutil.rmtree(CURRENT_TMPDIR, ignore_errors=True)
+        CURRENT_TMPDIR = None
+
+
+# ---------------------------------------------------------
+#  Trouver automatiquement IGV (toutes versions)
+# ---------------------------------------------------------
+def find_igv_launcher():
+    base_dirs = [
+        r"C:\Program Files",
+        r"C:\Program Files (x86)",
+    ]
+
+    for base in base_dirs:
+        try:
+            for entry in os.listdir(base):
+                if entry.lower().startswith("igv"):
+                    launcher = os.path.join(base, entry, "igv.bat")
+                    if os.path.exists(launcher):
+                        return launcher
+        except PermissionError:
+            continue
+
+    return None
+
+
+# ---------------------------------------------------------
+#  Trouver le BAM correspondant au sample dans le ZIP
+# ---------------------------------------------------------
+def find_spanning_bam(zip_path, sample_name=None):
+    """
+    Retourne (zip_path, bam, bai) si un BAM correspondant au sample existe.
+    Sinon retourne None proprement.
+    """
+    if not os.path.exists(zip_path):
+        return None
+
+    with zipfile.ZipFile(zip_path, "r") as z:
+        names = z.namelist()
+
+    if sample_name:
+        sample_lower = sample_name.lower()
+        for n in names:
+            if n.endswith(".sorted.spanning.bam") and sample_lower in n.lower():
+                bam = n
+                bai = bam + ".bai"
+                if bai in names:
+                    return zip_path, bam, bai
+
+    return None
+
+
+# ---------------------------------------------------------
+#  Trouver automatiquement le ZIP contenant les spanning BAM
+# ---------------------------------------------------------
+def get_available_spanning_bam(base_dir, sample_name=None):
+    """
+    Trouve le ZIP contenant les spanning BAM,
+    puis cherche le BAM correspondant au sample_name.
+    """
+    for f in os.listdir(base_dir):
+        if "spanning" in f.lower() and f.lower().endswith(".zip"):
+            zip_path = os.path.join(base_dir, f)
+            return find_spanning_bam(zip_path, sample_name)
+
+    return None
+
+
+# ---------------------------------------------------------
+#  Extraction + lancement IGV
+# ---------------------------------------------------------
+def open_igv(zip_path, bam_file, bai_file, chrom, start, end):
+    global CURRENT_TMPDIR
+
+    start_padded = max(0, start - PADDING)
+    end_padded = end + PADDING
+    region = f"{chrom}:{start_padded}-{end_padded}"
+
+    CURRENT_TMPDIR = tempfile.mkdtemp()
+
+    with zipfile.ZipFile(zip_path, "r") as outer:
+        outer.extract(bam_file, CURRENT_TMPDIR)
+        outer.extract(bai_file, CURRENT_TMPDIR)
+
+    bam_path = os.path.join(CURRENT_TMPDIR, bam_file)
+
+    launcher = find_igv_launcher()
+    if launcher:
+        try:
+            subprocess.Popen(
+                [launcher, bam_path, region],
+                cwd=os.path.dirname(launcher)
+            )
+            sg.popup("IGV a été lancé.")
+            return
+        except Exception as e:
+            sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
+            return
+
     sg.popup("Impossible de lancer IGV.\nIGV n'est pas installé ou pas détectable automatiquement.")
+
