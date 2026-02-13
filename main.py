@@ -206,37 +206,45 @@ def main():
             col_widths = [14, 8, 10, 20, 12, 10, 14, 20, 20, 30, 30]
 
             table_layout = [
-                [sg.Table(
-                    values=table_data,
-                    headings=headers,
-                    auto_size_columns=False,
-                    col_widths=col_widths,
-                    justification="left",
-                    num_rows=min(20, len(table_data)),
-                    key="-TABLE-",
-                    enable_events=True,
-                    expand_x=True,
-                    expand_y=True
-                )],
-                [sg.Frame("Détails", [
-                    [sg.Multiline(
-                        "",
-                        key="-DETAILS-",
-                        size=(300, 40),
-                        disabled=True,
+                [sg.Column([
+                    [sg.Table(
+                        values=table_data,
+                        headings=headers,
+                        auto_size_columns=False,
+                        col_widths=col_widths,
+                        justification="left",
+                        num_rows=min(20, len(table_data)),
+                        key="-TABLE-",
+                        enable_events=True,
                         expand_x=True,
                         expand_y=True
                     )],
-                    [sg.Text("Plots disponibles :"),
-                     sg.Combo([], key="-PLOTCHOICE-", size=(40,1), expand_x=True)],
-                    [sg.Button("Ouvrir plot"),
-                     sg.Button("Copier"),
-                     sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
+            
+                    [sg.Frame("Détails", [
+                        [sg.Multiline(
+                            "",
+                            key="-DETAILS-",
+                            size=(300, 40),
+                            disabled=True,
+                            expand_x=True,
+                            expand_y=True
+                        )],
+                        [sg.Text("Plots disponibles :"),
+                         sg.Combo([], key="-PLOTCHOICE-", size=(40,1), expand_x=True)],
+                        [sg.Button("Ouvrir plot"),
+                         sg.Button("Copier"),
+                         sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
+                    ],
+                    expand_x=True,
+                    expand_y=True)],
+            
+                    [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
+            
                 ],
                 expand_x=True,
-                expand_y=True)],
-                [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
+                expand_y=True)]
             ]
+
             
             # Si aucune taille n’est encore connue → on maximise
             if LAST_WINDOW_SIZE is None:
