@@ -74,6 +74,7 @@ def list_vcfs(zip_path):
 # -------------------------
 
 def main():
+    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
     sg.theme("SystemDefault")
 
     layout = [
@@ -248,7 +249,6 @@ def main():
                 ev, vals = table_window.read()
 
                 if ev in (sg.WINDOW_CLOSED, "Fermer"):
-                    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
                     LAST_WINDOW_SIZE = table_window.size
                     LAST_WINDOW_LOCATION = table_window.current_location()
                 
