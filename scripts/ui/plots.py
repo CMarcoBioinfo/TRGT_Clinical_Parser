@@ -53,7 +53,7 @@ def get_available_plots(base_dir, analyse_prefix, sample, trid):
     return results
     
 
-def open_svg(zip_path, inner_zip, svg_file):
+def open_svg(zip_path, inner_zip, svg_file, sample):
     """
     Extrait un SVG dans un dossier temporaire caché, l'ouvre dans le navigateur,
     puis supprime le fichier après un délai.
@@ -65,7 +65,7 @@ def open_svg(zip_path, inner_zip, svg_file):
                 svg_bytes = inner.read(svg_file)
 
                 # Créer un dossier caché pour les fichiers temporaires
-                tmp_dir = os.path.join(tempfile.gettempdir(), ".tmp_plots")
+                tmp_dir = os.path.join(tempfile.gettempdir(), ".tmp_plots", sample)
                 os.makedirs(tmp_dir, exist_ok=True)
 
                 tmp_path = os.path.join(tmp_dir, svg_file)
