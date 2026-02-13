@@ -29,6 +29,8 @@ import sys
 
 LAST_WINDOW_SIZE = None
 LAST_WINDOW_LOCATION = None
+result_window_open = False
+
 
 
 DISEASES = {
@@ -74,7 +76,8 @@ def list_vcfs(zip_path):
 # -------------------------
 
 def main():
-    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
+    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION, result_window_open
+
     sg.theme("SystemDefault")
 
     layout = [
@@ -152,6 +155,10 @@ def main():
 
         # Lancer l'analyse
         if event == "Lancer l'analyse":
+            if result_window_open:
+                sg.popup("Une analyse est déjà ouverte. Fermez-la avant d'en lancer une nouvelle.")
+                continue
+
             zip_path = values["-ZIP-"]
             sample_display = values["-SAMPLE-"]
 
@@ -260,6 +267,7 @@ def main():
                     finalize=True
                 )
                 table_window.maximize()
+                result_window_open = True
             
             else:
                 # On restaure taille + position
@@ -271,6 +279,7 @@ def main():
                     size=LAST_WINDOW_SIZE,
                     location=LAST_WINDOW_LOCATION
                 )
+                result_window_open = True
 
             # -------------------------
             # ÉVÉNEMENTS TABLEAU
@@ -288,6 +297,7 @@ def main():
                         pass
 
                 if ev in (sg.WINDOW_CLOSED, "Fermer"):
+                    result_window_open = False
                     cleanup_tmpdir_force()
                     table_window.close()
                     window.bring_to_front()
