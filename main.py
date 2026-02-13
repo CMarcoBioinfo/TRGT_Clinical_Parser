@@ -27,6 +27,10 @@ import sys
 # CONFIGURATION UI
 # -------------------------
 
+LAST_WINDOW_SIZE = None
+LAST_WINDOW_LOCATION = None
+
+
 DISEASES = {
     "FRDA (FXN)": "FRDA_FXN",
     "CANVAS (RFC1)": "CANVAS_RFC1",
@@ -221,9 +225,20 @@ def main():
                 ])],
                 [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
             ]
+            
+            table_window = sg.Window(
+                f"Résultats pour {sample_display}",
+                table_layout,
+                resizable=True,
+                finalize=True,
+                size=LAST_WINDOW_SIZE,
+                location=LAST_WINDOW_LOCATION
+            )
+            
+            # Si aucune taille n’est encore connue → on maximise
+            if LAST_WINDOW_SIZE is None:
+                table_window.maximize()
 
-            table_window = sg.Window(f"Résultats pour {sample_display}", table_layout, resizable=True, finalize=True)
-            table_window.maximize()
 
             # -------------------------
             # ÉVÉNEMENTS TABLEAU
@@ -233,6 +248,10 @@ def main():
                 ev, vals = table_window.read()
 
                 if ev in (sg.WINDOW_CLOSED, "Fermer"):
+                    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
+                    LAST_WINDOW_SIZE = table_window.size
+                    LAST_WINDOW_LOCATION = table_window.current_location()
+                
                     cleanup_tmpdir_force()
                     table_window.close()
                     window.bring_to_front()
