@@ -207,6 +207,8 @@ def main():
 
             table_layout = [
                 [sg.Column([
+            
+                    # --- TABLEAU ---
                     [sg.Table(
                         values=table_data,
                         headings=headers,
@@ -220,17 +222,17 @@ def main():
                         expand_y=True
                     )],
             
+                    # --- DÉTAILS ---
                     [sg.Frame("Détails", [
                         [sg.Multiline(
                             "",
                             key="-DETAILS-",
-                            size=(300, 40),
                             disabled=True,
                             expand_x=True,
                             expand_y=True
                         )],
                         [sg.Text("Plots disponibles :"),
-                         sg.Combo([], key="-PLOTCHOICE-", size=(40,1), expand_x=True)],
+                         sg.Combo([], key="-PLOTCHOICE-", expand_x=True)],
                         [sg.Button("Ouvrir plot"),
                          sg.Button("Copier"),
                          sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
@@ -238,7 +240,10 @@ def main():
                     expand_x=True,
                     expand_y=True)],
             
-                    [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
+                    # --- BOUTONS ---
+                    [sg.Column([
+                        [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
+                    ], expand_x=True)]
             
                 ],
                 expand_x=True,
