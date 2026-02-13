@@ -10,8 +10,8 @@ from scripts.ui.html_export import generate_html_table, save_and_open_html
 from scripts.ui.igv import get_available_spanning_bam, open_igv, cleanup_tmpdir_force
 
 
-import ctypes
-import sys
+# import ctypes
+# import sys
 
 # def open_console():
 #     # Ouvre une console Windows
