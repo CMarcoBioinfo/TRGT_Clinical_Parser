@@ -227,19 +227,26 @@ def main():
                 [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
             ]
             
-            table_window = sg.Window(
-                f"Résultats pour {sample_display}",
-                table_layout,
-                resizable=True,
-                finalize=True,
-                size=LAST_WINDOW_SIZE,
-                location=LAST_WINDOW_LOCATION
-            )
-            
             # Si aucune taille n’est encore connue → on maximise
             if LAST_WINDOW_SIZE is None:
+                table_window = sg.Window(
+                    f"Résultats pour {sample_display}",
+                    table_layout,
+                    resizable=True,
+                    finalize=True
+                )
                 table_window.maximize()
-
+            
+            else:
+                # On restaure taille + position
+                table_window = sg.Window(
+                    f"Résultats pour {sample_display}",
+                    table_layout,
+                    resizable=True,
+                    finalize=True,
+                    size=LAST_WINDOW_SIZE,
+                    location=LAST_WINDOW_LOCATION
+                )
 
             # -------------------------
             # ÉVÉNEMENTS TABLEAU
