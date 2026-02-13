@@ -271,7 +271,7 @@ def main():
                     choice = vals["-PLOTCHOICE-"]
                     if choice:
                         zip_path, inner_zip, svg_file = row["Plots_links"][choice]
-                        open_svg(zip_path, inner_zip, svg_file)
+                        open_svg(zip_path, inner_zip, svg_file, sample_name)
 
                 if ev == "Copier":
                     sg.clipboard_set(table_window["-DETAILS-"].get())
