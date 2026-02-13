@@ -253,15 +253,19 @@ def main():
             # -------------------------
 
             while True:
-                ev, vals = table_window.read()
-
-                if ev in (sg.WINDOW_CLOSED, "Fermer"):                
-                    if table_window.TKroot is not None:
+                ev, vals = table_window.read(timeout=200)
+            
+                # Sauvegarde continue tant que la fenêtre existe
+                if table_window.TKroot is not None:
+                    try:
                         LAST_WINDOW_SIZE = table_window.size
                         LAST_WINDOW_LOCATION = table_window.current_location()
-                
-                    table_window.close()
+                    except:
+                        pass
+
+                if ev in (sg.WINDOW_CLOSED, "Fermer"):
                     cleanup_tmpdir_force()
+                    table_window.close()
                     window.bring_to_front()
                     break
 
