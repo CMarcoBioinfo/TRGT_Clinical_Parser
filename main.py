@@ -108,7 +108,7 @@ def main():
     # -------------------------
 
     while True:
-        event, values = window.read()
+        event, values = window.read(timeout=100)
         if event == sg.WINDOW_CLOSED:
             break
 
