@@ -255,9 +255,7 @@ def main():
             while True:
                 ev, vals = table_window.read()
 
-                if ev in (sg.WINDOW_CLOSED, "Fermer"):
-                    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
-                
+                if ev in (sg.WINDOW_CLOSED, "Fermer"):                
                     if table_window.TKroot is not None:
                         LAST_WINDOW_SIZE = table_window.size
                         LAST_WINDOW_LOCATION = table_window.current_location()
