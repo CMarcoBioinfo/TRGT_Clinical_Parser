@@ -133,8 +133,8 @@ SCA27B_FGF14:
             - ["GAA"]
 
     thresholds:
-        normal: [0, 179]
-        intermediate: [180, 249]
+        normal: [0, 199]
+        intermediate: [200, 249]
         pathogenic_incomplete: [250, 300]
         pathogenic_complete: [301, null]
 
@@ -185,8 +185,8 @@ FRDA_FXN:
 
     thresholds:
         normal: [0, 33]
-        intermediate: [34, 84]
-        pathogenic_complete: [85, null]
+        intermediate: [34, 89]
+        pathogenic_complete: [90, null]
 
     structure_rules: []
         # - conditions:
