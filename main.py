@@ -219,11 +219,22 @@ def main():
                     expand_y=True
                 )],
                 [sg.Frame("Détails", [
-                    [sg.Multiline("", key="-DETAILS-", size=(300, 40), disabled=True, expand_x=True, expand_y=True)],
-                    [sg.Text("Plots disponibles :"), sg.Combo([], key="-PLOTCHOICE-", size=(40,1))],
-                    [sg.Button("Ouvrir plot"), sg.Button("Copier")],
-                    [sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
-                ])],
+                    [sg.Multiline(
+                        "",
+                        key="-DETAILS-",
+                        size=(300, 40),
+                        disabled=True,
+                        expand_x=True,
+                        expand_y=True
+                    )],
+                    [sg.Text("Plots disponibles :"),
+                     sg.Combo([], key="-PLOTCHOICE-", size=(40,1), expand_x=True)],
+                    [sg.Button("Ouvrir plot"),
+                     sg.Button("Copier"),
+                     sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
+                ],
+                expand_x=True,
+                expand_y=True)],
                 [sg.Button("Imprimer le tableau"), sg.Button("Fermer")]
             ]
             
