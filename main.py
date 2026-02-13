@@ -256,11 +256,14 @@ def main():
                 ev, vals = table_window.read()
 
                 if ev in (sg.WINDOW_CLOSED, "Fermer"):
-                    LAST_WINDOW_SIZE = table_window.size
-                    LAST_WINDOW_LOCATION = table_window.current_location()
+                    global LAST_WINDOW_SIZE, LAST_WINDOW_LOCATION
                 
-                    cleanup_tmpdir_force()
+                    if table_window.TKroot is not None:
+                        LAST_WINDOW_SIZE = table_window.size
+                        LAST_WINDOW_LOCATION = table_window.current_location()
+                
                     table_window.close()
+                    cleanup_tmpdir_force()
                     window.bring_to_front()
                     break
 
