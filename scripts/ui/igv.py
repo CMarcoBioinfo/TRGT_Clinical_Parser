@@ -184,11 +184,10 @@ def open_igv(spanning_zip_path=None, spanning_bam_file=None, spanning_bai_file=N
 
     try:
         subprocess.Popen(
-            [launcher] + bam_list + [region],
+            [launcher] + bam_list + ["--", region],
             cwd=os.path.dirname(launcher)
         )
         sg.popup("IGV a été lancé avec :\n" + "\n".join(bam_list))
 
     except Exception as e:
         sg.popup(f"Erreur lors du lancement d'IGV :\n{e}")
-
