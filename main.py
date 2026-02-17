@@ -233,7 +233,7 @@ def main():
                             size=(300, 40)
                         )],
                         [sg.Text("Plots disponibles :"),
-                         sg.Combo([], key="-PLOTCHOICE-", expand_x=True, size=(40,1))],
+                         sg.Combo([], key="-PLOTCHOICE-", size=(40,1))],
                         [sg.Button("Ouvrir plot"),
                          sg.Button("Copier"),
                          sg.Button("Ouvrir IGV", key="-IGV-", disabled=True)]
