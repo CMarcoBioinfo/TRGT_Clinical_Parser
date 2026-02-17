@@ -7,7 +7,7 @@ import os
 from scripts.core.orchestrator import process_sample
 from scripts.ui.plots import get_analysis_prefix, open_svg
 from scripts.ui.html_export import generate_html_table, save_and_open_html
-from scripts.ui.igv import get_available_spanning_bam, open_igv, cleanup_tmpdir_force
+from scripts.ui.igv import open_igv, cleanup_tmpdir_force
 
 
 # import ctypes
