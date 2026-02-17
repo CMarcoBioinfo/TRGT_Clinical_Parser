@@ -209,5 +209,8 @@ def process_plots(r, base_dir, prefix, sample_name):
 
 def process_igv(r, base_dir, sample_name):
     spanning = get_available_spanning_bam(base_dir, sample_name)
-    r["IGV_links"] = spanning if spanning else None
+    bam = get_available_bam(base_dir, sample_name)
+    r["IGV_links_spanning"] = spanning if spanning else None
+    r["IGV_links_bam"] = bam if bam else None
+
     return r
