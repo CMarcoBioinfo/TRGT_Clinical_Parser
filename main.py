@@ -334,15 +334,31 @@ def main():
                     save_and_open_html(html)
 
                 if ev == "-IGV-":
-                    links = row.get("IGV_links")
+                    chrom = row["CHROM"]
+                    start = row["START"]
+                    end = row["END"]
                 
-                    if not links:
-                        sg.popup("Aucun spanning BAM disponible pour cet échantillon.")
+                    # --- SPANNING BAM ---
+                    spanning = row.get("IGV_links_spanning")  # (zip_path, bam, bai)
+                    if spanning:
+                        s_zip_path, s_bam_file, s_bai_file = spanning
+                    else:
+                        s_zip_path = s_bam_file = s_bai_file = None
+                
+                    # --- MAPPED BAM ---
+                    mapped = row.get("IGV_links_bam")  # (zip_path, bam, bai)
+                    if mapped:
+                        m_zip_path, m_bam_file, m_bai_file = mapped
+                    else:
+                        m_zip_path = m_bam_file = m_bai_file = None
+                
+                    # --- ERREUR SI AUCUN BAM DISPONIBLE ---
+                    if not spanning and not mapped:
+                        sg.popup("Aucun BAM (spanning ou complet) n'est disponible pour cet échantillon.")
                         continue
                 
-                    zip_path, bam_file, bai_file = links
-                
-                    open_igv(zip_path, bam_file, bai_file, row["CHROM"], row["START"], row["END"])
+                    # --- LANCEMENT IGV ---
+                    open_igv( spanning_zip_path=s_zip_path, spanning_bam_file=s_bam_file, spanning_bai_file=s_bai_file, mapped_zip_path=m_zip_path, mapped_bam_file=m_bam_file, mapped_bai_file=m_bai_file, chrom=chrom, start=start, end=end)
 
     window.close()
 
