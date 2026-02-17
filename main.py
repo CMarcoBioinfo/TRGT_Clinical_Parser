@@ -219,7 +219,7 @@ def main():
                         key="-TABLE-",
                         enable_events=True,
                         expand_x=True,
-                        expand_y=True
+                        expand_y=False
                     )],
             
                     # --- DÉTAILS ---
