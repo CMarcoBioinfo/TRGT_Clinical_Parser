@@ -10,7 +10,7 @@ from scripts.bio.genotype_compute import build_genotype
 from scripts.bio.clinical_classifier import classify_allele
 from scripts.ui.marking import mark_motifs, mark_segmentation
 from scripts.ui.plots import get_available_plots
-from scripts.ui.igv import get_available_spanning_bam
+from scripts.ui.igv import get_available_spanning_bam, get_available_bam
 
 
 def process_orientation(r, orientation):
