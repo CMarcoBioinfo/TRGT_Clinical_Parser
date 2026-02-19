@@ -124,6 +124,11 @@ def get_available_bam(base_dir, sample_name=None):
     return None
     
 def open_igv(spanning_zip_path=None, spanning_bam_file=None, spanning_bai_file=None, mapped_zip_path=None, mapped_bam_file=None, mapped_bai_file=None, chrom=None, start=None, end=None):
+    # --- Vérification du locus ---
+    if chrom is None or start is None or end is None:
+        sg.popup("Aucun locus sélectionné.\nVeuillez sélectionner un locus avant d’ouvrir IGV.")
+        return
+        
     global CURRENT_TMPDIR
 
     # --- Préparation région ---
