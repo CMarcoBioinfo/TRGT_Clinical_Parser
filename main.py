@@ -317,9 +317,16 @@ def main():
 
                     available = [label for label in row["Plots_links"] if row["Plots_links"][label]]
                     table_window["-PLOTCHOICE-"].update(values=available)
-                    table_window["-OPENPLOT-"].update(disabled=False)
+                    if available:
+                        table_window["-OPENPLOT-"].update(disabled=False)
+                    else:
+                        table_window["-OPENPLOT-"].update(disabled=True)
 
-                if ev == "Ouvrir plot":
+                if ev == "-OPENPLOT-":
+                    if not vals["-TABLE-"]:
+                        sg.popup("Veuillez sélectionner un locus dans le tableau.")
+                        continue
+                        
                     idx = vals["-TABLE-"][0]
                     row = rows[idx]
                     choice = vals["-PLOTCHOICE-"]
