@@ -317,6 +317,7 @@ def main():
 
                     available = [label for label in row["Plots_links"] if row["Plots_links"][label]]
                     table_window["-PLOTCHOICE-"].update(values=available)
+                    table_window["-OPENPLOT-"].update(values=available)
 
                 if ev == "Ouvrir plot":
                     idx = vals["-TABLE-"][0]
