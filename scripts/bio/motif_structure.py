@@ -118,11 +118,8 @@ def build_fxn_motif(repetitions, interruptions, segmentation, motif_props):
     if m < 0:
         m = 0
 
-    # 8) Total final en unités
-    total_units = n_GAA + units_long + m
-
-    # 9) Construction de la notation enrichie
-    parts = [str(total_units)]
+    # 8) Construction de la notation enrichie
+    parts = [str(n_GAA)]
 
     if n_GAAA > 0:
         parts.append(f" + {units_GAAA} ({long1})")
