@@ -80,7 +80,7 @@ def main():
     layout = [
         [sg.Text("Sélection du fichier TRGT (trgt_vcf.zip)")],
         [sg.Input(key="-ZIP-", enable_events=True), sg.FileBrowse("Parcourir")],
-        [sg.Text("Sample à analyser")],
+        [sg.Text("Patient à analyser")],
         [sg.Input(key="-SEARCH-", enable_events=True, size=(40,1))],
         [sg.Combo([], key="-SAMPLE-", size=(40,1), readonly=True)],
         [sg.Text("Maladies à analyser")],
@@ -156,7 +156,7 @@ def main():
             sample_display = values["-SAMPLE-"]
 
             if not zip_path or not sample_display:
-                window["-STATUS-"].update("Veuillez sélectionner un ZIP et un sample", text_color="red")
+                window["-STATUS-"].update("Veuillez sélectionner un ZIP et un patient", text_color="red")
                 continue
 
             sample_internal = window.metadata[sample_display]
@@ -168,7 +168,7 @@ def main():
             ]
 
             if not selected_trids:
-                window["-STATUS-"].update("Veuillez sélectionner au moins une maladie", text_color="red")
+                window["-STATUS-"].update("Veuillez sélectionner au moins un locus", text_color="red")
                 continue
 
             # Préparation
@@ -299,7 +299,7 @@ def main():
                     
                     details = [f"{h} : {row.get(h, '')}" for h in headers]
                     details.append(f"Pureté : {row.get('Pureté', '')}")
-                    details.append(f"Methylation : {row.get('Methylation', '')}")
+                    details.append(f"Méthylation : {row.get('Methylation', '')}")
 
                     # Interruptions
                     if row.get("Interruptions1") or row.get("Interruptions2"):
