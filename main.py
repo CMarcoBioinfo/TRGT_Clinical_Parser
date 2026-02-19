@@ -317,7 +317,7 @@ def main():
 
                     available = [label for label in row["Plots_links"] if row["Plots_links"][label]]
                     table_window["-PLOTCHOICE-"].update(values=available)
-                    table_window["-OPENPLOT-"].update(values=available)
+                    table_window["-OPENPLOT-"].update(disabled=False)
 
                 if ev == "Ouvrir plot":
                     idx = vals["-TABLE-"][0]
@@ -334,20 +334,20 @@ def main():
                     html = generate_html_table(headers, rows, sample_name)
                     save_and_open_html(html)
 
-                if ev == "-IGV-":
+                if ev == "--":
                     chrom = row["CHROM"]
                     start = row["START"]
                     end = row["END"]
                 
                     # --- SPANNING BAM ---
-                    spanning = row.get("IGV_links_spanning")  # (zip_path, bam, bai)
+                    spanning = row.get("_links_spanning")  # (zip_path, bam, bai)
                     if spanning:
                         s_zip_path, s_bam_file, s_bai_file = spanning
                     else:
                         s_zip_path = s_bam_file = s_bai_file = None
                 
                     # --- MAPPED BAM ---
-                    mapped = row.get("IGV_links_bam")  # (zip_path, bam, bai)
+                    mapped = row.get("_links_bam")  # (zip_path, bam, bai)
                     if mapped:
                         m_zip_path, m_bam_file, m_bai_file = mapped
                     else:
@@ -358,7 +358,7 @@ def main():
                         sg.popup("Aucun BAM (spanning ou complet) n'est disponible pour cet échantillon.")
                         continue
                 
-                    # --- LANCEMENT IGV ---
+                    # --- LANCEMENT  ---
                     open_igv( spanning_zip_path=s_zip_path, spanning_bam_file=s_bam_file, spanning_bai_file=s_bai_file, mapped_zip_path=m_zip_path, mapped_bam_file=m_bam_file, mapped_bai_file=m_bai_file, chrom=chrom, start=start, end=end)
 
     window.close()
