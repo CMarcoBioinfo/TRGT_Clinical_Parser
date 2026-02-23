@@ -338,7 +338,7 @@ def main():
                     sg.clipboard_set(table_window["-DETAILS-"].get())
 
                 if ev == "Imprimer le tableau":
-                    html = generate_html_table(headers, rows, sample_name)
+                    html = generate_html_table(["Gene","Profondeur","Genotype","Classification"], rows, sample_name)
                     save_and_open_html(html)
 
                 if ev == "--":
