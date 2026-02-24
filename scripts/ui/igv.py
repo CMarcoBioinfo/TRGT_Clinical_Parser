@@ -183,7 +183,6 @@ def open_igv(spanning_zip_path=None, spanning_bam_file=None, spanning_bai_file=N
     # 4) Lancement IGV
     # ---------------------------------------------------------
     launcher = find_igv_launcher()
-    print(launcher)
     if not launcher:
         sg.popup("IGV introuvable sur cette machine.")
         return
