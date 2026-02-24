@@ -10,17 +10,17 @@ from scripts.ui.html_export import generate_html_table, save_and_open_html
 from scripts.ui.igv import open_igv, cleanup_tmpdir_force
 
 
-import ctypes
-import sys
+# import ctypes
+# import sys
 
-def open_console():
-    # Ouvre une console Windows
-    ctypes.windll.kernel32.AllocConsole()
-    # Redirige stdout et stderr vers la console
-    sys.stdout = open("CONOUT$", "w")
-    sys.stderr = open("CONOUT$", "w")
+# def open_console():
+#     # Ouvre une console Windows
+#     ctypes.windll.kernel32.AllocConsole()
+#     # Redirige stdout et stderr vers la console
+#     sys.stdout = open("CONOUT$", "w")
+#     sys.stderr = open("CONOUT$", "w")
 
-open_console()
+# open_console()
 
 
 # -------------------------
@@ -341,7 +341,7 @@ def main():
                     html = generate_html_table(["Gene","Profondeur","Genotype","Classification"], rows, sample_name)
                     save_and_open_html(html)
 
-                if ev == "--":
+                if ev == "-IGV-":
                     chrom = row["CHROM"]
                     start = row["START"]
                     end = row["END"]
