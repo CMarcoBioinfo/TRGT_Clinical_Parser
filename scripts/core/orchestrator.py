@@ -92,14 +92,22 @@ def process_repeats(r, thresholds_data):
         r["Genotype"] = None
 
     # Classification clinique
-    motifs = r["_motifs_used"]
+    clin_int1 = has_clinical_interruptions_for_allele(
+        r["Répétition1"],
+        r["TRID"],
+        thresholds_data,
+        r.get("Interruptions1"),
+    )
     
-    clin_int1 = detect_clinical_interruptions(motifs, r["TRID"], thresholds_data)
-    clin_int2 = detect_clinical_interruptions(motifs, r["TRID"], thresholds_data)
+    clin_int2 = has_clinical_interruptions_for_allele(
+        r["Répétition2"],
+        r["TRID"],
+        thresholds_data,
+        r.get("Interruptions2"),
+    )
     
     c1 = classify_allele(r["TRID"], g1, clin_int1, thresholds_data)
     c2 = classify_allele(r["TRID"], g2, clin_int2, thresholds_data)
-
     
     r["Classification1"] = c1
     r["Classification2"] = c2
@@ -107,18 +115,27 @@ def process_repeats(r, thresholds_data):
 
     return r
 
-def detect_clinical_interruptions(motifs, trid, thresholds_data):
-    """
-    Détecte les interruptions cliniques :
-    - motifs TRGT différents des motifs pathogènes ou groupes de motifs pathogènes.
-    """
+def has_clinical_interruptions_for_allele(rep_clin, trid, thresholds_data, trgt_interruptions):
+    # Si TRGT a détecté une interruption structurelle → interrompu
+    if trgt_interruptions not in (None, "", []):
+        return True
+
     motif_props = get_motif_properties(trid, thresholds_data)
 
     allowed = set(motif_props.get("pathogenic_motifs", []))
     for group in motif_props.get("motif_groups", []):
         allowed.update(group)
 
-    return any(m not in allowed for m in motifs)
+    # extraire les motifs de l'allèle clinique
+    blocks = rep_clin.split("_")
+    motifs_in_allele = []
+    for b in blocks:
+        motif = "".join(c for c in b.split("(", 1)[0] if c.isalpha() or c == "+")
+        motifs_in_allele.extend(motif.split("+"))
+
+    # interruption clinique = motif non autorisé dans CET allèle
+    return any(m not in allowed for m in motifs_in_allele)
+
 
 
 def process_interruptions(r):
