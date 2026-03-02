@@ -92,14 +92,33 @@ def process_repeats(r, thresholds_data):
         r["Genotype"] = None
 
     # Classification clinique
-    c1 = classify_allele(r["TRID"], g1, r.get("Interruptions1"), thresholds_data)
-    c2 = classify_allele(r["TRID"], g2, r.get("Interruptions2"), thresholds_data)
+    motifs = r["_motifs_used"]
+    
+    clin_int1 = detect_clinical_interruptions(motifs, r["TRID"], thresholds_data)
+    clin_int2 = detect_clinical_interruptions(motifs, r["TRID"], thresholds_data)
+    
+    c1 = classify_allele(r["TRID"], g1, clin_int1, thresholds_data)
+    c2 = classify_allele(r["TRID"], g2, clin_int2, thresholds_data)
+
     
     r["Classification1"] = c1
     r["Classification2"] = c2
     r["Classification"] = f"{c1} / {c2}"
 
     return r
+
+def detect_clinical_interruptions(motifs, trid, thresholds_data):
+    """
+    Détecte les interruptions cliniques :
+    - motifs TRGT différents des motifs pathogènes ou groupes de motifs pathogènes.
+    """
+    motif_props = get_motif_properties(trid, thresholds_data)
+
+    allowed = set(motif_props.get("pathogenic_motifs", []))
+    for group in motif_props.get("motif_groups", []):
+        allowed.update(group)
+
+    return any(m not in allowed for m in motifs)
 
 
 def process_interruptions(r):
