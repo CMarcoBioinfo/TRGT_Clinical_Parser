@@ -115,28 +115,6 @@ def process_repeats(r, thresholds_data):
 
     return r
 
-def has_clinical_interruptions_for_allele(rep_clin, trid, thresholds_data, trgt_interruptions):
-    # Si TRGT a détecté une interruption structurelle → interrompu
-    if trgt_interruptions not in (None, "", []):
-        return True
-
-    motif_props = get_motif_properties(trid, thresholds_data)
-
-    allowed = set(motif_props.get("pathogenic_motifs", []))
-    for group in motif_props.get("motif_groups", []):
-        allowed.update(group)
-
-    # extraire les motifs de l'allèle clinique
-    blocks = rep_clin.split("_")
-    motifs_in_allele = []
-    for b in blocks:
-        motif = "".join(c for c in b.split("(", 1)[0] if c.isalpha() or c == "+")
-        motifs_in_allele.extend(motif.split("+"))
-
-    # interruption clinique = motif non autorisé dans CET allèle
-    return any(m not in allowed for m in motifs_in_allele)
-
-
 
 def process_interruptions(r):
     seq1 = r["_seq1"]
