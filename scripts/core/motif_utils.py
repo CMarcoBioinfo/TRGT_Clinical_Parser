@@ -57,22 +57,3 @@ def compute_m(interruption_bp, motif_len):
     if motif_len <= 0:
         return 0
     return round(interruption_bp / motif_len)
-
-def has_interruptions(segmentation, motif_group):
-        # Indices des segments appartenant au motif_group
-    group_indices = [
-        i for i, (motif, start, end) in enumerate(segmentation)
-        if motif in motif_group
-    ]
-    if not group_indices:
-        return False
-
-    first_idx = group_indices[0]
-    last_idx = group_indices[-1]
-    
-    # Ne parcourir que la fenêtre interne
-    for motif, start, end in segmentation[first_idx:last_idx+1]:
-        if motif not in motif_group:
-            return True
-            
-    return False
