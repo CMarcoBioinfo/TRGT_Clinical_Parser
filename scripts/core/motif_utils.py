@@ -57,3 +57,20 @@ def compute_m(interruption_bp, motif_len):
     if motif_len <= 0:
         return 0
     return round(interruption_bp / motif_len)
+
+
+def has_clinical_interruptions(rep_clin, repetitions, interruptions, segmentation, motif_props):
+    """
+    Détermine si un allèle est interrompu cliniquement.
+    """
+
+    motif_groups = motif_props["motif_groups"][0]
+
+    # 1) Séparation motifs pathogènes / hors groupe
+    groups, others = extract_group_motifs(repetitions, interruptions, motif_groups)
+
+    # 2) Interruptions internes TRGT
+    i_bp, i_count = compute_interruption_bp(segmentation, motif_groups)
+
+    # 3) Interruption clinique = présence de motifs hors groupe OU interruptions internes
+    return bool(others) or i_count > 0
