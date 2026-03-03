@@ -2,7 +2,6 @@ from scripts.core.vcf_parser import parse_vcf_from_zip
 from scripts.core.segmentation_parser import combine_mc, combine_ms
 from scripts.core.segmentation_utils import remove_zero_repeats, sort_repeats, number_interruptions
 from scripts.core.segmentation_interruptions import find_interruptions, extract_interruption_sequences, segmentation_complete
-from scripts.core.motif_utils import extract_group_motifs, compute_interruption_bp
 from scripts.bio.motifs_orientation import reverse_complement, rc_motifs, rc_segmentation
 from scripts.bio.motif_structure import build_motif
 from scripts.bio.clinical_thresholds_loader import load_clinical_thresholds, get_motif_properties
@@ -48,24 +47,6 @@ def process_segmentation(r):
     
     return r
 
-
-def has_clinical_interruptions(rep_clin, repetitions, interruptions, segmentation, motif_props):
-    """
-    Détermine si un allèle est interrompu cliniquement.
-    """
-
-    motif_groups = motif_props["motif_groups"][0]
-
-    # 1) Séparation motifs pathogènes / hors groupe
-    groups, others = extract_group_motifs(repetitions, interruptions, motif_groups)
-
-    # 2) Interruptions internes TRGT
-    i_bp, i_count = compute_interruption_bp(segmentation, motif_groups)
-
-    # 3) Interruption clinique = présence de motifs hors groupe OU interruptions internes
-    return bool(others) or i_count > 0
-
-
 def process_repeats(r, thresholds_data):
     """Nettoyage et construction du motif TRGT final."""
 
@@ -109,23 +90,11 @@ def process_repeats(r, thresholds_data):
     else:
         r["Genotype"] = None
 
-    # Classification clinique
-    clin_int1 = has_clinical_interruptions_for_allele(
-        r["Répétition1"],
-        r["TRID"],
-        thresholds_data,
-        r.get("Interruptions1"),
-    )
+    has_inter1 = ("i" in rep1_clin)
+    has_inter2 = ("i" in rep2_clin) 
     
-    clin_int2 = has_clinical_interruptions_for_allele(
-        r["Répétition2"],
-        r["TRID"],
-        thresholds_data,
-        r.get("Interruptions2"),
-    )
-    
-    c1 = classify_allele(r["TRID"], g1, clin_int1, thresholds_data)
-    c2 = classify_allele(r["TRID"], g2, clin_int2, thresholds_data)
+    c1 = classify_allele(r["TRID"], g1, has_inter1, thresholds_data)
+    c2 = classify_allele(r["TRID"], g2, has_inter2, thresholds_data)
     
     r["Classification1"] = c1
     r["Classification2"] = c2
