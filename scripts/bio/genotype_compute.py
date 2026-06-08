@@ -22,38 +22,34 @@ def compute_genotype(repetitions, motif_props):
         return None
 
     block = extract_main_block(repetitions, motif_groups)
-    if block == -1:
+    if block in (None, -1):
         return None
 
-    inside = block.split(",", 1)[0].split("(", 1)[1]
+    try:
+        inside = block.split(",", 1)[0].split("(", 1)[1]
+    except Exception:
+        return None
 
-    # enlever les ")" pour éviter de perdre "2m)"
     inside = inside.replace(")", "")
-
     number = inside.replace("+", " ").split()
 
     total = 0
     for n in number:
 
-        # motifs longs "(GAAA" "(49GAAGAAA"
         if "(" in n:
             continue
 
-        # interruptions "2i"
         if n.endswith("i") and n[:-1].isdigit():
             continue
 
-        # résidus "2m"
         if n.endswith("m") and n[:-1].isdigit():
             total += int(n[:-1])
             continue
 
-        # nombres simples
         if n.isdigit():
             total += int(n)
             continue
 
-        # ignorer tout le reste
         if any(c.isalpha() for c in n):
             continue
 
